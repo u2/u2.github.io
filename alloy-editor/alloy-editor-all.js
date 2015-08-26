@@ -21872,13 +21872,14 @@ CKEDITOR.disableAutoInline = true;
     function _init(editor) {
         var window = editor.window.$,
             document = editor.document.$;
+
         var snapToSize = typeof IMAGE_SNAP_TO_SIZE === 'undefined' ? null : IMAGE_SNAP_TO_SIZE;
 
         var resizer = new Resizer(editor, {
             snapToSize: snapToSize
         });
 
-        var dragStart, dragMove, dragEnd, b_width, b_height, isBeyond, diffX, diffY;
+        var dragging = new ImgDrag(editor, resizer);
 
         document.addEventListener('mousedown', function (e) {
             if (resizer.isHandle(e.target)) {
@@ -21886,63 +21887,16 @@ CKEDITOR.disableAutoInline = true;
             }
         }, false);
 
-        function _drag(e) {
-            var clientX,
-                clientY,
-                offsetLeft,
-                offsetTop,
-                width,
-                height,
-                $target = this,
-                self = this;
-
-            // 记录鼠标按下时的位置及拖动元素的相对位置
-            clientX = e.clientX;
-            clientY = e.clientY;
-            offsetLeft = this.offsetLeft;
-            offsetTop = this.offsetTop;
-
-            width = $target.width;
-            height = $target.height;
-
-            $target.addEventListener('mousemove', moveHandle, false);
-            $target.addEventListener('mouseup', upHandle, false);
-
-            function moveHandle(e) {
-                var e_diffX = e.clientX - clientX,
-                    e_diffY = e.clientY - clientY,
-                    x = e_diffX + offsetLeft,
-                    y = e_diffY + offsetTop;
-
-                $target.style.left = x + 'px';
-                $target.style.top = y + 'px';
-            }
-
-            function upHandle(e) {
-                $target.removeEventListener('mousemove', moveHandle, false);
-            }
-        }
-
         function selectionChange() {
             var selection = editor.getSelection();
             if (!selection) return;
             // If an element is selected and that element is an IMG
             var startElement = selection.getStartElement();
+
             if (selection.getType() !== CKEDITOR.SELECTION_NONE && startElement.is('img')) {
                 // And we're not right or middle clicking on the image
                 if (!window.event || !window.event.button || window.event.button === 0) {
-                    resizer.show(startElement.$);
-
-                    var img = startElement.$;
-                    b_width = img.width;
-                    b_height = img.height;
-
-                    startElement.setStyles({ position: 'absolute' });
-                    img.addEventListener('mousedown', function (event) {
-                        console.log('mousedown');
-                        _drag.apply(this, [event]);
-                        event.preventDefault();
-                    });
+                    dragging.selectionChangeHandle(startElement);
                 }
             } else {
                 resizer.hide();
@@ -21986,7 +21940,79 @@ CKEDITOR.disableAutoInline = true;
             // Delay resize to "debounce"
             resizeTimeout = setTimeout(selectionChange, 50);
         });
-    }
+    };
+
+    function ImgDrag(editor, resizer) {
+        this.editor = editor;
+        this.window = editor.window.$;
+        this.document = editor.document.$;
+        this.resizer = resizer;
+
+        this.events = {
+            moveHandle: bind(this.moveHandle, this),
+            upHandle: bind(this.upHandle, this),
+            downHandle: bind(this.downHandle, this)
+        };
+    };
+
+    ImgDrag.prototype = {
+        init: function init() {
+            this.boundaryElem = this.editor.element.$;
+            this.b_height = this.boundaryElem.clientHeight;
+            this.b_width = this.boundaryElem.clientWidth;
+        },
+
+        selectionChangeHandle: function selectionChangeHandle(startElement) {
+            this.target = startElement.$;
+
+            this.resizer.show(this.target);
+            startElement.setStyles({ position: 'absolute', cursor: 'move' });
+            this.init();
+            this.mousedown();
+        },
+
+        mousedown: function mousedown() {
+            this.target.addEventListener('mousedown', this.events.downHandle, false);
+        },
+
+        downHandle: function downHandle(e) {
+            this.offsetLeft = this.target.offsetLeft;
+            this.offsetTop = this.target.offsetTop;
+            this.clientX = e.clientX;
+            this.clientY = e.clientY;
+
+            this.limitObj = {
+                _left: 0,
+                _top: 0,
+                _right: this.b_width - this.target.width,
+                _bottom: this.b_height - this.target.height
+            };
+
+            event.preventDefault();
+            this.target.addEventListener('mousemove', this.events.moveHandle, false);
+            this.target.addEventListener('mouseup', this.events.upHandle, false);
+            // for firefox ie9 || less than ie9
+            window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+        },
+
+        moveHandle: function moveHandle(e) {
+            var e_diffX = e.clientX - this.clientX,
+                e_diffY = e.clientY - this.clientY,
+                x = e_diffX + this.offsetLeft,
+                y = e_diffY + this.offsetTop;
+
+            x = Math.max(Math.min(x, this.limitObj._right), this.limitObj._left);
+            y = Math.max(Math.min(y, this.limitObj._bottom), this.limitObj._top);
+
+            this.target.style.left = x + 'px';
+            this.target.style.top = y + 'px';
+            this.resizer.hide();
+        },
+
+        upHandle: function upHandle(e) {
+            this.target.removeEventListener('mousemove', this.events.moveHandle, false);
+        }
+    };
 
     function Resizer(editor, cfg) {
         this.editor = editor;
