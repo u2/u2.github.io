@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Solidity in Depth &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="next" title="Layout of a Solidity Source File" href="layout-of-source-files.html" />
+    <link rel="prev" title="Solidity by Example" href="solidity-by-example.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="layout-of-source-files.html" title="Layout of a Solidity Source File"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="solidity-by-example.html" title="Solidity by Example"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="solidity-in-depth">
+<h1>Solidity in Depth<a class="headerlink" href="#solidity-in-depth" title="Permalink to this headline">¶</a></h1>
+<p>This section should provide you with all you need to know about Solidity.
+If something is missing here, please contact us on
+<a class="reference external" href="https://gitter.im/ethereum/solidity">Gitter</a> or make a pull request on
+<a class="reference external" href="https://github.com/ethereum/solidity/pulls">Github</a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#importing-other-source-files">Importing other Source Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#comments">Comments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="types.html#value-types">Value Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#enums">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#reference-types">Reference Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#mappings">Mappings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#operators-involving-lvalues">Operators Involving LValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#conversions-between-elementary-types">Conversions between Elementary Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#type-deduction">Type Deduction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#ether-units">Ether Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#time-units">Time Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#special-variables-and-functions">Special Variables and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#control-structures">Control Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#function-calls">Function Calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#order-of-evaluation-of-expressions">Order of Evaluation of Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#assignment">Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#creating-contracts">Creating Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#visibility-and-accessors">Visibility and Accessors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#function-modifiers">Function Modifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#fallback-function">Fallback Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#inheritance">Inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#abstract-contracts">Abstract Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#libraries">Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#using-for">Using For</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="miscellaneous.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#layout-of-state-variables-in-storage">Layout of State Variables in Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#esoteric-features">Esoteric Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#internals-the-optimizer">Internals - the Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#using-the-commandline-compiler">Using the Commandline Compiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#tips-and-tricks">Tips and Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#pitfalls">Pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miscellaneous.html#cheatsheet">Cheatsheet</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="solidity-by-example.html"
+                        title="previous chapter">Solidity by Example</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="layout-of-source-files.html"
+                        title="next chapter">Layout of a Solidity Source File</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/solidity-in-depth.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="layout-of-source-files.html" title="Layout of a Solidity Source File"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="solidity-by-example.html" title="Solidity by Example"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

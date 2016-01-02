@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Common Patterns &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="next" title="Frequently Asked Questions" href="frequently-asked-questions.html" />
+    <link rel="prev" title="Style Guide" href="style-guide.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="frequently-asked-questions.html" title="Frequently Asked Questions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="style-guide.html" title="Style Guide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="common-patterns">
+<h1>Common Patterns<a class="headerlink" href="#common-patterns" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="restricting-access">
+<span id="index-0"></span><h2>Restricting Access<a class="headerlink" href="#restricting-access" title="Permalink to this headline">¶</a></h2>
+<p>Restricting access is a common pattern for contracts.
+Note that you can never restrict any human or computer
+from reading the content of your transactions or
+your contract&#8217;s state. You can make it a bit harder
+by using encryption, but if your contract is supposed
+to read the data, so will everyone else.</p>
+<p>You can restrict read access to your contract&#8217;s state
+by <strong>other contracts</strong>. That is actually the default
+unless you declare make your state variables <cite>public</cite>.</p>
+<p>Furthermore, you can restrict who can make modifications
+to your contract&#8217;s state or call your contract&#8217;s
+functions and this is what this page is about.</p>
+<p id="index-1">The use of <strong>function modifiers</strong> makes these
+restrictions highly readable.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">AccessRestriction</span> <span class="p">{</span>
+    <span class="c1">// These will be assigned at the construction</span>
+    <span class="c1">// phase, where `msg.sender` is the account</span>
+    <span class="c1">// creating this contract.</span>
+    <span class="kt">address</span> <span class="k">public</span> <span class="nx">owner</span> <span class="o">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="k">public</span> <span class="nx">creationTime</span> <span class="o">=</span> <span class="nx">now</span><span class="p">;</span>
+
+    <span class="c1">// Modifiers can be used to change</span>
+    <span class="c1">// the body of a function.</span>
+    <span class="c1">// If this modifier is used, it will</span>
+    <span class="c1">// prepend a check that only passes</span>
+    <span class="c1">// if the function is called from</span>
+    <span class="c1">// a certain address.</span>
+    <span class="kd">modifier</span> <span class="nx">onlyBy</span><span class="p">(</span><span class="kt">address</span> <span class="nx">_account</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">!=</span> <span class="nx">_account</span><span class="p">)</span>
+            <span class="k">throw</span><span class="p">;</span>
+        <span class="c1">// Do not forget the &quot;_&quot;! It will</span>
+        <span class="c1">// be replaced by the actual function</span>
+        <span class="c1">// body when the modifier is invoked.</span>
+        <span class="nx">_</span>
+    <span class="p">}</span>
+
+    <span class="cs">/// Make `_newOwner` the new owner of this</span>
+    <span class="cs">/// contract.</span>
+    <span class="kd">function</span> <span class="nx">changeOwner</span><span class="p">(</span><span class="kt">address</span> <span class="nx">_newOwner</span><span class="p">)</span>
+        <span class="nx">onlyBy</span><span class="p">(</span><span class="nx">owner</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nx">owner</span> <span class="o">=</span> <span class="nx">_newOwner</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">modifier</span> <span class="nx">onlyAfter</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">_time</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">now</span> <span class="o">&lt;</span> <span class="nx">_time</span><span class="p">)</span> <span class="k">throw</span><span class="p">;</span>
+        <span class="nx">_</span>
+    <span class="p">}</span>
+
+    <span class="cs">/// Erase ownership information.</span>
+    <span class="cs">/// May only be called 6 weeks after</span>
+    <span class="cs">/// the contract has been created.</span>
+    <span class="kd">function</span> <span class="nx">disown</span><span class="p">()</span>
+        <span class="nx">onlyBy</span><span class="p">(</span><span class="nx">owner</span><span class="p">)</span>
+        <span class="nx">onlyAfter</span><span class="p">(</span><span class="nx">creationTime</span> <span class="o">+</span> <span class="mi">6</span> <span class="nx">weeks</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">delete</span> <span class="nx">owner</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// This modifier requires a certain</span>
+    <span class="c1">// fee being associated with a function call.</span>
+    <span class="c1">// If the caller sent too much, he or she is</span>
+    <span class="c1">// refunded, but only after the function body.</span>
+    <span class="c1">// This is dangerous, because if the function</span>
+    <span class="c1">// uses `return` explicitly, this will not be</span>
+    <span class="c1">// done!</span>
+    <span class="kd">modifier</span> <span class="nx">costs</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">_amount</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span> <span class="o">&lt;</span> <span class="nx">_amount</span><span class="p">)</span>
+            <span class="k">throw</span><span class="p">;</span>
+        <span class="nx">_</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span> <span class="o">&gt;</span> <span class="nx">_amount</span><span class="p">)</span>
+            <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">_amount</span> <span class="o">-</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">forceOwnerChange</span><span class="p">(</span><span class="kt">address</span> <span class="nx">_newOwner</span><span class="p">)</span>
+        <span class="nx">costs</span><span class="p">(</span><span class="mi">200</span> <span class="nx">ether</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nx">owner</span> <span class="o">=</span> <span class="nx">_newOwner</span><span class="p">;</span>
+        <span class="c1">// just some example condition</span>
+        <span class="k">if</span> <span class="p">(</span><span class="kt">uint</span><span class="p">(</span><span class="nx">owner</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1">// in this case, overpaid fees will not</span>
+            <span class="c1">// be refunded</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="c1">// otherwise, refund overpaid fees</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A more specialised way in which access to function
+calls can be restricted will be discussed
+in the next example.</p>
+</div>
+<div class="section" id="state-machine">
+<span id="index-2"></span><h2>State Machine<a class="headerlink" href="#state-machine" title="Permalink to this headline">¶</a></h2>
+<p>Contracts often act as a state machine, which means
+that they have certain <strong>stages</strong> in which they behave
+differently or in which different functions can
+be called. A function call often ends a stage
+and transitions the contract into the next stage
+(especially if the contract models <strong>interaction</strong>).
+It is also common that some stages are automatically
+reached at a certain point in <strong>time</strong>.</p>
+<p>An example for this is a blind auction contract which
+starts in the stage &#8220;accepting blinded bids&#8221;, then
+transitions to &#8220;revealing bids&#8221; which is ended by
+&#8220;determine auction autcome&#8221;.</p>
+<p id="index-3">Function modifiers can be used in this situation
+to model the states and guard against
+incorrect usage of the contract.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>In the following example,
+the modifier <cite>atStage</cite> ensures that the function can
+only be called at a certain stage.</p>
+<p>Automatic timed transitions
+are handled by the modifier <cite>timeTransitions</cite>, which
+should be used for all functions.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Modifier Order Matters</strong>.
+If atStage is combined
+with timedTransitions, make sure that you mention
+it after the latter, so that the new stage is
+taken into account.</p>
+</div>
+<p>Finally, the modifier <cite>transitionNext</cite> can be used
+to automatically go to the next stage when the
+function finishes.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Modifier May be Skipped</strong>.
+Since modifiers are applied by simply replacing
+code and not by using a function call,
+the code in the transitionNext modifier
+can be skipped if the function itself uses
+return. If you want to do that, make sure
+to call nextStage manually from those functions.</p>
+</div>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">StateMachine</span> <span class="p">{</span>
+    <span class="kd">enum</span> <span class="nx">Stages</span> <span class="p">{</span>
+        <span class="nx">AcceptingBlindedBids</span><span class="p">,</span>
+        <span class="nx">RevealBids</span><span class="p">,</span>
+        <span class="nx">AnotherStage</span><span class="p">,</span>
+        <span class="nx">AreWeDoneYet</span><span class="p">,</span>
+        <span class="nx">Finished</span>
+    <span class="p">}</span>
+    <span class="c1">// This is the current stage.</span>
+    <span class="nx">Stages</span> <span class="k">public</span> <span class="nx">stage</span> <span class="o">=</span> <span class="nx">Stages</span><span class="p">.</span><span class="nx">AcceptingBlindedBids</span><span class="p">;</span>
+
+    <span class="kt">uint</span> <span class="k">public</span> <span class="nx">creationTime</span> <span class="o">=</span> <span class="nx">now</span><span class="p">;</span>
+
+    <span class="kd">modifier</span> <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span> <span class="nx">_stage</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stage</span> <span class="o">!=</span> <span class="nx">_stage</span><span class="p">)</span> <span class="k">throw</span><span class="p">;</span>
+        <span class="nx">_</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">nextStage</span><span class="p">()</span> <span class="k">internal</span> <span class="p">{</span>
+        <span class="nx">stage</span> <span class="o">=</span> <span class="nx">Stages</span><span class="p">(</span><span class="kt">uint</span><span class="p">(</span><span class="nx">stage</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Perform timed transitions. Be sure to mention</span>
+    <span class="c1">// this modifier first, otherwise the guards</span>
+    <span class="c1">// will not take the new stage into account.</span>
+    <span class="kd">modifier</span> <span class="nx">timedTransitions</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stage</span> <span class="o">==</span> <span class="nx">Stages</span><span class="p">.</span><span class="nx">AcceptingBlindedBids</span> <span class="o">&amp;&amp;</span>
+                    <span class="nx">now</span> <span class="o">&gt;=</span> <span class="nx">creationTime</span> <span class="o">+</span> <span class="mi">10</span> <span class="nx">days</span><span class="p">)</span>
+            <span class="nx">nextStage</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">stage</span> <span class="o">==</span> <span class="nx">Stages</span><span class="p">.</span><span class="nx">RevealBids</span> <span class="o">&amp;&amp;</span>
+                <span class="nx">now</span> <span class="o">&gt;=</span> <span class="nx">creationTime</span> <span class="o">+</span> <span class="mi">12</span> <span class="nx">days</span><span class="p">)</span>
+            <span class="nx">nextStage</span><span class="p">();</span>
+        <span class="c1">// The other stages transition by transaction</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Order of the modifiers matters here!</span>
+    <span class="kd">function</span> <span class="nx">bid</span><span class="p">()</span>
+        <span class="nx">timedTransitions</span>
+        <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span><span class="p">.</span><span class="nx">AcceptingBlindedBids</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// We will not implement that here</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">reveal</span><span class="p">()</span>
+        <span class="nx">timedTransitions</span>
+        <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span><span class="p">.</span><span class="nx">RevealBids</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="c1">// This modifier goes to the next stage</span>
+    <span class="c1">// after the function is done.</span>
+    <span class="c1">// If you use `return` in the function,</span>
+    <span class="c1">// `nextStage` will not be called</span>
+    <span class="c1">// automatically.</span>
+    <span class="kd">modifier</span> <span class="nx">transitionNext</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nx">_</span>
+        <span class="nx">nextStage</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">g</span><span class="p">()</span>
+        <span class="nx">timedTransitions</span>
+        <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span><span class="p">.</span><span class="nx">AnotherStage</span><span class="p">)</span>
+        <span class="nx">transitionNext</span>
+    <span class="p">{</span>
+        <span class="c1">// If you want to use `return` here,</span>
+        <span class="c1">// you have to call `nextStage()` manually.</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">h</span><span class="p">()</span>
+        <span class="nx">timedTransitions</span>
+        <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span><span class="p">.</span><span class="nx">AreWeDoneYet</span><span class="p">)</span>
+        <span class="nx">transitionNext</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">i</span><span class="p">()</span>
+        <span class="nx">timedTransitions</span>
+        <span class="nx">atStage</span><span class="p">(</span><span class="nx">Stages</span><span class="p">.</span><span class="nx">Finished</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Common Patterns</a><ul>
+<li><a class="reference internal" href="#restricting-access">Restricting Access</a></li>
+<li><a class="reference internal" href="#state-machine">State Machine</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="style-guide.html"
+                        title="previous chapter">Style Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="frequently-asked-questions.html"
+                        title="next chapter">Frequently Asked Questions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/common-patterns.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="frequently-asked-questions.html" title="Frequently Asked Questions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="style-guide.html" title="Style Guide"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

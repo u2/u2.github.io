@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Expressions and Control Structures &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="Solidity in Depth" href="solidity-in-depth.html" />
+    <link rel="next" title="Contracts" href="contracts.html" />
+    <link rel="prev" title="Units and Globally Available Variables" href="units-and-global-variables.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="contracts.html" title="Contracts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="units-and-global-variables.html" title="Units and Globally Available Variables"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" accesskey="U">Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="expressions-and-control-structures">
+<h1>Expressions and Control Structures<a class="headerlink" href="#expressions-and-control-structures" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="control-structures">
+<span id="index-0"></span><h2>Control Structures<a class="headerlink" href="#control-structures" title="Permalink to this headline">¶</a></h2>
+<p>Most of the control structures from C/JavaScript are available in Solidity
+except for <cite>switch</cite> and <cite>goto</cite>. So
+there is: <cite>if</cite>, <cite>else</cite>, <cite>while</cite>, <cite>for</cite>, <cite>break</cite>, <cite>continue</cite>, <cite>return</cite>, with
+the usual semantics known from C / JavaScript.</p>
+<p>Parentheses can <em>not</em> be omitted for conditionals, but curly brances can be omitted
+around single-statement bodies.</p>
+<p>Note that there is no type conversion from non-boolean to boolean types as
+there is in C and JavaScript, so <cite>if (1) { ... }</cite> is _not_ valid Solidity.</p>
+</div>
+<div class="section" id="function-calls">
+<span id="index-1"></span><h2>Function Calls<a class="headerlink" href="#function-calls" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="internal-function-calls">
+<h3>Internal Function Calls<a class="headerlink" href="#internal-function-calls" title="Permalink to this headline">¶</a></h3>
+<p>Functions of the current contract can be called directly (&#8220;internally&#8221;), also recursively, as seen in
+this nonsensical example:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">c</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">g</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">a</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">ret</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">f</span><span class="p">();</span> <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">ret</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">g</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="o">+</span> <span class="nx">f</span><span class="p">();</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>These function calls are translated into simple jumps inside the EVM. This has
+the effect that the current memory is not cleared, i.e. passing memory references
+to internally-called functions is very efficient. Only functions of the same
+contract can be called internally.</p>
+</div>
+<div class="section" id="external-function-calls">
+<h3>External Function Calls<a class="headerlink" href="#external-function-calls" title="Permalink to this headline">¶</a></h3>
+<p>The expression <cite>this.g(8);</cite> is also a valid function call, but this time, the function
+will be called &#8220;externally&#8221;, via a message call and not directly via jumps.
+Functions of other contracts have to be called externally. For an external call,
+all function arguments have to be copied to memory.</p>
+<p>When calling functions
+of other contracts, the amount of Wei sent with the call and the gas can be specified:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">InfoFeed</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">info</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">ret</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">42</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">contract</span> <span class="nx">Consumer</span> <span class="p">{</span>
+  <span class="nx">InfoFeed</span> <span class="nx">feed</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">setFeed</span><span class="p">(</span><span class="kt">address</span> <span class="nx">addr</span><span class="p">)</span> <span class="p">{</span> <span class="nx">feed</span> <span class="o">=</span> <span class="nx">InfoFeed</span><span class="p">(</span><span class="nx">addr</span><span class="p">);</span> <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">callFeed</span><span class="p">()</span> <span class="p">{</span> <span class="nx">feed</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span><span class="nx">gas</span><span class="p">(</span><span class="mi">800</span><span class="p">)();</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that the expression <cite>InfoFeed(addr)</cite> performs an explicit type conversion stating
+that &#8220;we know that the type of the contract at the given address is <cite>InfoFeed</cite>&#8221; and
+this does not execute a constructor. We could also have used <cite>function setFeed(InfoFeed _feed) { feed = _feed; }</cite> directly.  Be careful about the fact that <cite>feed.info.value(10).gas(800)</cite>
+only (locally) sets the value and amount of gas sent with the function call and only the
+parentheses at the end perform the actual call.</p>
+</div>
+<div class="section" id="named-calls-and-anonymous-function-parameters">
+<h3>Named Calls and Anonymous Function Parameters<a class="headerlink" href="#named-calls-and-anonymous-function-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Function call arguments can also be given by name, in any order, and the names
+of unused parameters (especially return parameters) can be omitted.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">c</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">key</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">g</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// named arguments</span>
+    <span class="nx">f</span><span class="p">({</span><span class="nx">value</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">key</span><span class="o">:</span> <span class="mi">3</span><span class="p">});</span>
+  <span class="p">}</span>
+  <span class="c1">// omitted parameters</span>
+  <span class="kd">function</span> <span class="nx">func</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">k</span><span class="p">,</span> <span class="kt">uint</span><span class="p">)</span> <span class="k">returns</span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">k</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="order-of-evaluation-of-expressions">
+<h2>Order of Evaluation of Expressions<a class="headerlink" href="#order-of-evaluation-of-expressions" title="Permalink to this headline">¶</a></h2>
+<p>The evaluation order of expressions is not specified (more formally, the order
+in which the children of one node in the expression tree are evaluated is not
+specified, but they are of course evaluated before the node itself). It is only
+guaranteed that statements are executed in order and short-circuiting for
+boolean expressions is done.</p>
+</div>
+<div class="section" id="assignment">
+<span id="index-2"></span><h2>Assignment<a class="headerlink" href="#assignment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="destructuring-assignments-and-returning-multiple-values">
+<span id="index-3"></span><h3>Destructuring Assignments and Returning Multiple Values<a class="headerlink" href="#destructuring-assignments-and-returning-multiple-values" title="Permalink to this headline">¶</a></h3>
+<p>Solidity internally allows tuple types, i.e. a list of objects of potentially different types whose size is a constant at compile-time. Those tuples can be used to return multiple values at the same time and also assign them to multiple variables (or LValues in general) at the same time:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+  <span class="kt">uint</span><span class="p">[]</span> <span class="nx">data</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span><span class="p">,</span> <span class="kt">bool</span><span class="p">,</span> <span class="kt">uint</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">g</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Declares and assigns the variables. Specifying the type explicitly is not possible.</span>
+    <span class="kd">var</span> <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=</span> <span class="nx">f</span><span class="p">();</span>
+    <span class="c1">// Assigns to a pre-existing variable.</span>
+    <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="c1">// Common trick to swap values -- does not work for non-value storage types.</span>
+    <span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">);</span>
+    <span class="c1">// Components can be left out (also for variable declarations).</span>
+    <span class="c1">// If the tuple ends in an empty component,</span>
+    <span class="c1">// the rest of the values are discarded.</span>
+    <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">,)</span> <span class="o">=</span> <span class="nx">f</span><span class="p">();</span> <span class="c1">// Sets the length to 7</span>
+    <span class="c1">// The same can be done on the left side.</span>
+    <span class="p">(,</span><span class="nx">data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">=</span> <span class="nx">f</span><span class="p">();</span> <span class="c1">// Sets data[3] to 2</span>
+    <span class="c1">// Components can only be left out at the left-hand-side of assignments, with</span>
+    <span class="c1">// one exception:</span>
+    <span class="p">(</span><span class="nx">x</span><span class="p">,)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,);</span>
+    <span class="c1">// (1,) is the only way to specify a 1-component tuple, because (1) is</span>
+    <span class="c1">// equivalent to 1.</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="complications-for-arrays-and-structs">
+<h3>Complications for Arrays and Structs<a class="headerlink" href="#complications-for-arrays-and-structs" title="Permalink to this headline">¶</a></h3>
+<p>The semantics of assignment are a bit more complicated for non-value types like arrays and structs.
+Assigning <em>to</em> a state variable always creates an independent copy. On the other hand, assigning to a local variable creates an independent copy only for elementary types, i.e. static types that fit into 32 bytes. If structs or arrays (including <cite>bytes</cite> and <cite>string</cite>) are assigned from a state variable to a local variable, the local variable holds a reference to the original state variable. A second assignment to the local variable does not modify the state but only changes the reference. Assignments to members (or elements) of the local variable <em>do</em> change the state.</p>
+</div>
+</div>
+<div class="section" id="exceptions">
+<span id="index-4"></span><h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<p>There are some cases where exceptions are thrown automatically (see below). You can use the <cite>throw</cite> instruction to throw an exception manually. The effect of an exception is that the currently executing call is stopped and reverted (i.e. all changes to the state and balances are undone) and the exception is also &#8220;bubbled up&#8221; through Solidity function calls (exceptions are <cite>send</cite> and the low-level functions <cite>call</cite> and <cite>callcode</cite>, those return <cite>false</cite> in case of an exception).</p>
+<p>Catching exceptions is not yet possible.</p>
+<p>In the following example, we show how <cite>throw</cite> can be used to easily revert an Ether transfer and also how to check the return value of <cite>send</cite>:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">Sharer</span> <span class="p">{</span>
+    <span class="kd">function</span> <span class="nx">sendHalf</span><span class="p">(</span><span class="kt">address</span> <span class="nx">addr</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">balance</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">addr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">throw</span><span class="p">;</span> <span class="c1">// also reverts the transfer to Sharer</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">balance</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Currently, there are three situations, where exceptions happen automatically in Solidity:</p>
+<ol class="arabic simple">
+<li>If you access an array beyond its length (i.e. <cite>x[i]</cite> where <cite>i &gt;= x.length</cite>)</li>
+<li>If a function called via a message call does not finish properly (i.e. it runs out of gas or throws an exception itself).</li>
+<li>If a non-existent function on a library is called or Ether is sent to a library.</li>
+</ol>
+<p>Internally, Solidity performs an &#8220;invalid jump&#8221; when an exception is thrown and thus causes the EVM to revert all changes made to the state. The reason for this is that there is no safe way to continue execution, because an expected effect did not occur. Because we want to retain the atomicity of transactions, the safest thing to do is to revert all changes and make the whole transaction (or at least call) without effect.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Expressions and Control Structures</a><ul>
+<li><a class="reference internal" href="#control-structures">Control Structures</a></li>
+<li><a class="reference internal" href="#function-calls">Function Calls</a><ul>
+<li><a class="reference internal" href="#internal-function-calls">Internal Function Calls</a></li>
+<li><a class="reference internal" href="#external-function-calls">External Function Calls</a></li>
+<li><a class="reference internal" href="#named-calls-and-anonymous-function-parameters">Named Calls and Anonymous Function Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#order-of-evaluation-of-expressions">Order of Evaluation of Expressions</a></li>
+<li><a class="reference internal" href="#assignment">Assignment</a><ul>
+<li><a class="reference internal" href="#destructuring-assignments-and-returning-multiple-values">Destructuring Assignments and Returning Multiple Values</a></li>
+<li><a class="reference internal" href="#complications-for-arrays-and-structs">Complications for Arrays and Structs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="units-and-global-variables.html"
+                        title="previous chapter">Units and Globally Available Variables</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contracts.html"
+                        title="next chapter">Contracts</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/control-structures.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="contracts.html" title="Contracts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="units-and-global-variables.html" title="Units and Globally Available Variables"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" >Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

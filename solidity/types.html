@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Types &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="Solidity in Depth" href="solidity-in-depth.html" />
+    <link rel="next" title="Units and Globally Available Variables" href="units-and-global-variables.html" />
+    <link rel="prev" title="Structure of a Contract" href="structure-of-a-contract.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="units-and-global-variables.html" title="Units and Globally Available Variables"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="structure-of-a-contract.html" title="Structure of a Contract"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" accesskey="U">Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="types">
+<span id="index-0"></span><h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<p>Solidity is a statically typed language, which means that the type of each
+variable (state and local) needs to be specified (or at least known -
+see <a class="reference internal" href="#type-deduction"><span>Type Deduction</span></a> below) at
+compile-time. Solidity provides several elementary types which can be combined
+to complex types.</p>
+<div class="section" id="value-types">
+<span id="index-1"></span><h2>Value Types<a class="headerlink" href="#value-types" title="Permalink to this headline">¶</a></h2>
+<p>The following types are also called value types because variables of these
+types will always be passed by value, i.e. they are always copied when they
+are used as function arguments or in assignments.</p>
+<div class="section" id="booleans">
+<span id="index-2"></span><h3>Booleans<a class="headerlink" href="#booleans" title="Permalink to this headline">¶</a></h3>
+<p><cite>bool</cite>: The possible values are constants <cite>true</cite> and <cite>false</cite>.</p>
+<p>Operators:</p>
+<ul class="simple">
+<li><cite>!</cite> (logical negation)</li>
+<li><cite>&amp;&amp;</cite> (logical conjunction, &#8220;and&#8221;)</li>
+<li><cite>||</cite> (logical disjunction, &#8220;or&#8221;)</li>
+<li><cite>==</cite> (equality)</li>
+<li><cite>!=</cite> (inequality)</li>
+</ul>
+<p>The operators <cite>||</cite> and <cite>&amp;&amp;</cite> apply the common short-circuiting rules. This means that in the expression <cite>f(x) || g(y)</cite>, if <cite>f(x)</cite> evaluates to <cite>true</cite>, <cite>g(y)</cite> will not be evaluated even if it may have side-effects.</p>
+</div>
+<div class="section" id="integers">
+<span id="index-3"></span><h3>Integers<a class="headerlink" href="#integers" title="Permalink to this headline">¶</a></h3>
+<p><cite>int•</cite> / <cite>uint•</cite>: Signed and unsigned integers of various sizes. Keywords <cite>uint8</cite> to <cite>uint256</cite> in steps of <cite>8</cite> (unsigned of 8 up to 256 bits) and <cite>int8</cite> to <cite>int256</cite>. <cite>uint</cite> and <cite>int</cite> are aliases for <cite>uint256</cite> and <cite>int256</cite>, respectively.</p>
+<p>Operators:</p>
+<ul class="simple">
+<li>Comparisons: <cite>&lt;=</cite>, <cite>&lt;</cite>, <cite>==</cite>, <cite>!=</cite>, <cite>&gt;=</cite>, <cite>&gt;</cite> (evaluate to <cite>bool</cite>)</li>
+<li>Bit operators: <cite>&amp;</cite>, <cite>|</cite>, <cite>^</cite> (bitwise exclusive or), <cite>~</cite> (bitwise negation)</li>
+<li>Arithmetic operators: <cite>+</cite>, <cite>-</cite>, unary <cite>-</cite>, unary <cite>+</cite>, <cite>*</cite>, <cite>/</cite>, <cite>%</cite> (remainder), <cite>**</cite> (exponentiation)</li>
+</ul>
+</div>
+<div class="section" id="address">
+<span id="index-4"></span><h3>Address<a class="headerlink" href="#address" title="Permalink to this headline">¶</a></h3>
+<p><cite>address</cite>: Holds a 20 byte value (size of an Ethereum address). Address types also have members(see [Functions on addresses](#functions-on-addresses)) and serve as base for all contracts.</p>
+<p>Operators:</p>
+<ul class="simple">
+<li><cite>&lt;=</cite>, <cite>&lt;</cite>, <cite>==</cite>, <cite>!=</cite>, <cite>&gt;=</cite> and <cite>&gt;</cite></li>
+</ul>
+<div class="section" id="members-of-addresses">
+<h4>Members of Addresses<a class="headerlink" href="#members-of-addresses" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><cite>balance</cite> and <cite>send</cite></li>
+</ul>
+<p>It is possible to query the balance of an address using the property <cite>balance</cite>
+and to send Ether (in units of wei) to an address using the <cite>send</cite> function:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kt">address</span> <span class="nx">x</span> <span class="o">=</span> <span class="mh">0x123</span><span class="p">;</span>
+<span class="kt">address</span> <span class="nx">myAddress</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">balance</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="nx">myAddress</span><span class="p">.</span><span class="nx">balance</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="nx">x</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <cite>x</cite> is a contract address, its code (more specifically: its fallback function, if present) will be executed together with the <cite>send</cite> call (this is a limitation of the EVM and cannot be prevented). If that execution runs out of gas or fails in any way, the Ether transfer will be reverted. In this case, <cite>send</cite> returns <cite>false</cite>.</p>
+</div>
+<ul class="simple">
+<li><cite>call</cite> and <cite>callcode</cite></li>
+</ul>
+<p>Furthermore, to interface with contracts that do not adhere to the ABI,
+the function <cite>call</cite> is provided which takes an arbitrary number of arguments of any type. These arguments are padded to 32 bytes and concatenated. One exception is the case where the first argument is encoded to exactly four bytes. In this case, it is not padded to allow the use of function signatures here.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kt">address</span> <span class="nx">nameReg</span> <span class="o">=</span> <span class="mh">0x72ba7d8e73fe8eb666ea66babc8116a41bfb10e2</span><span class="p">;</span>
+<span class="nx">nameReg</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="s2">&quot;register&quot;</span><span class="p">,</span> <span class="s2">&quot;MyName&quot;</span><span class="p">);</span>
+<span class="nx">nameReg</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kt">bytes4</span><span class="p">(</span><span class="nx">sha3</span><span class="p">(</span><span class="s2">&quot;fun(uint256)&quot;</span><span class="p">)),</span> <span class="nx">a</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><cite>call</cite> returns a boolean indicating whether the invoked function terminated (<cite>true</cite>) or caused an EVM exception (<cite>false</cite>). It is not possible to access the actual data returned (for this we would need to know the encoding and size in advance).</p>
+<p>In a similar way, the function <cite>callcode</cite> can be used: The difference is that only the code of the given address is used, all other aspects (storage, balance, ...) are taken from the current contract. The purpose of <cite>callcode</cite> is to use library code which is stored in another contract. The user has to ensure that the layout of storage in both contracts is suitable for callcode to be used.</p>
+<p>Both <cite>call</cite> and <cite>callcode</cite> are very low-level functions and should only be used as a <em>last resort</em> as they break the type-safety of Solidity.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All contracts inherit the members of address, so it is possible to query the balance of the
+current contract using <cite>this.balance</cite>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="fixed-size-byte-arrays">
+<span id="index-5"></span><h3>Fixed-size byte arrays<a class="headerlink" href="#fixed-size-byte-arrays" title="Permalink to this headline">¶</a></h3>
+<p><cite>bytes1</cite>, <cite>bytes2</cite>, <cite>bytes3</cite>, ..., <cite>bytes32</cite>. <cite>byte</cite> is an alias for <cite>bytes1</cite>.</p>
+<p>Operators:</p>
+<ul class="simple">
+<li>Comparisons: <cite>&lt;=</cite>, <cite>&lt;</cite>, <cite>==</cite>, <cite>!=</cite>, <cite>&gt;=</cite>, <cite>&gt;</cite> (evaluate to <cite>bool</cite>)</li>
+<li>Bit operators: <cite>&amp;</cite>, <cite>|</cite>, <cite>^</cite> (bitwise exclusive or), <cite>~</cite> (bitwise negation)</li>
+</ul>
+</div>
+<div class="section" id="dynamically-sized-byte-array">
+<h3>Dynamically-sized byte array<a class="headerlink" href="#dynamically-sized-byte-array" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><cite>bytes</cite>:</dt>
+<dd>Dynamically-sized byte array, see <a class="reference internal" href="#arrays"><span>Arrays</span></a>. Not a value-type!</dd>
+<dt><cite>string</cite>:</dt>
+<dd>Dynamically-sized UTF8-encoded string, see <a class="reference internal" href="#arrays"><span>Arrays</span></a>. Not a value-type!</dd>
+</dl>
+<p>As a rule of thumb, use <cite>bytes</cite> for arbitrary-length raw byte data and <cite>string</cite>
+for arbitrary-length string (utf-8) data. If you can limit the length to a certain
+number of bytes, always use one of <cite>bytes1</cite> to <cite>bytes32</cite> because they are much cheaper.</p>
+</div>
+<div class="section" id="integer-literals">
+<span id="index-6"></span><h3>Integer Literals<a class="headerlink" href="#integer-literals" title="Permalink to this headline">¶</a></h3>
+<p>Integer Literals are arbitrary precision integers until they are used together with a non-literal. In <cite>var x = 1 - 2;</cite>, for example, the value of <cite>1 - 2</cite> is <cite>-1</cite>, which is assigned to <cite>x</cite> and thus <cite>x</cite> receives the type <cite>int8</cite> &#8211; the smallest type that contains <cite>-1</cite>, although the natural types of <cite>1</cite> and <cite>2</cite> are actually <cite>uint8</cite>.</p>
+<p>It is even possible to temporarily exceed the maximum of 256 bits as long as only integer literals are used for the computation: <cite>var x = (0xffffffffffffffffffff * 0xffffffffffffffffffff) * 0;</cite> Here, <cite>x</cite> will have the value <cite>0</cite> and thus the type <cite>uint8</cite>.</p>
+</div>
+<div class="section" id="string-literals">
+<span id="index-7"></span><h3>String Literals<a class="headerlink" href="#string-literals" title="Permalink to this headline">¶</a></h3>
+<p>String Literals are written with double quotes (<cite>&#8220;abc&#8221;</cite>). As with integer literals, their type can vary, but they are implicitly convertible to <cite>bytes•</cite> if they fit, to <cite>bytes</cite> and to <cite>string</cite>.</p>
+</div>
+</div>
+<div class="section" id="enums">
+<span id="index-8"></span><h2>Enums<a class="headerlink" href="#enums" title="Permalink to this headline">¶</a></h2>
+<p>Enums are one way to create a user-defined type in Solidity. They are explicitly convertible
+to and from all integer types but implicit conversion is not allowed.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">test</span> <span class="p">{</span>
+    <span class="kd">enum</span> <span class="nx">ActionChoices</span> <span class="p">{</span> <span class="nx">GoLeft</span><span class="p">,</span> <span class="nx">GoRight</span><span class="p">,</span> <span class="nx">GoStraight</span><span class="p">,</span> <span class="nx">SitStill</span> <span class="p">}</span>
+    <span class="nx">ActionChoices</span> <span class="nx">choice</span><span class="p">;</span>
+    <span class="nx">ActionChoices</span> <span class="k">constant</span> <span class="nx">defaultChoice</span> <span class="o">=</span> <span class="nx">ActionChoices</span><span class="p">.</span><span class="nx">GoStraight</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">setGoStraight</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nx">choice</span> <span class="o">=</span> <span class="nx">ActionChoices</span><span class="p">.</span><span class="nx">GoStraight</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// Since enum types are not part of the ABI, the signature of &quot;getChoice&quot;</span>
+    <span class="c1">// will automatically be changed to &quot;getChoice() returns (uint8)&quot;</span>
+    <span class="c1">// for all matters external to Solidity. The integer type used is just</span>
+    <span class="c1">// large enough to hold all enum values, i.e. if you have more values,</span>
+    <span class="c1">// `uint16` will be used and so on.</span>
+    <span class="kd">function</span> <span class="nx">getChoice</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="nx">ActionChoices</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">choice</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">getDefaultChoice</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">uint</span><span class="p">(</span><span class="nx">defaultChoice</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reference-types">
+<span id="index-9"></span><h2>Reference Types<a class="headerlink" href="#reference-types" title="Permalink to this headline">¶</a></h2>
+<p>Complex types, i.e. types which do not always fit into 256 bits have to be handled
+more carefully than the value-types we have already seen. Since copying
+them can be quite expensive, we have to think about whether we want them to be
+stored in <strong>memory</strong> (which is not persisting) or <strong>storage</strong> (where the state
+variables are held).</p>
+<div class="section" id="data-location">
+<h3>Data location<a class="headerlink" href="#data-location" title="Permalink to this headline">¶</a></h3>
+<p>Every complex type, i.e. <em>arrays</em> and <em>structs</em>, has an additional
+annotation, the &#8220;data location&#8221;, about whether it is stored in memory or in storage. Depending on the
+context, there is always a default, but it can be overridden by appending
+either <cite>storage</cite> or <cite>memory</cite> to the type. The default for function parameters (including return parameters) is <cite>memory</cite>, the default for local variables is <cite>storage</cite> and the location is forced
+to <cite>storage</cite> for state variables (obviously).</p>
+<p>There is also a third data location, &#8220;calldata&#8221;, which is a non-modifyable
+non-persistent area where function arguments are stored. Function parameters
+(not return parameters) of external functions are forced to &#8220;calldata&#8221; and
+it behaves mostly like memory.</p>
+<p>Data locations are important because they change how assignments behave:
+Assignments between storage and memory and also to a state variable (even from other state variables)
+always create an independent copy.
+Assignments to local storage variables only assign a reference though, and
+this reference always points to the state variable even if the latter is changed
+in the meantime.
+On the other hand, assignments from a memory stored reference type to another
+memory-stored reference type does not create a copy.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">c</span> <span class="p">{</span>
+  <span class="kt">uint</span><span class="p">[]</span> <span class="nx">x</span><span class="p">;</span> <span class="c1">// the data location of x is storage</span>
+  <span class="c1">// the data location of memoryArray is memory</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="kt">uint</span><span class="p">[]</span> <span class="nx">memoryArray</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">x</span> <span class="o">=</span> <span class="nx">memoryArray</span><span class="p">;</span> <span class="c1">// works, copies the whole array to storage</span>
+    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span> <span class="c1">// works, assigns a pointer, data location of y is storage</span>
+    <span class="nx">y</span><span class="p">[</span><span class="mi">7</span><span class="p">];</span> <span class="c1">// fine, returns the 8th element</span>
+    <span class="nx">y</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// fine, modifies x through y</span>
+    <span class="k">delete</span> <span class="nx">x</span><span class="p">;</span> <span class="c1">// fine, clears the array, also modifies y</span>
+    <span class="c1">// The following does not work; it would need to create a new temporary /</span>
+    <span class="c1">// unnamed array in storage, but storage is &quot;statically&quot; allocated:</span>
+    <span class="c1">// y = memoryArray;</span>
+    <span class="c1">// This does not work either, since it would &quot;reset&quot; the pointer, but there</span>
+    <span class="c1">// is no sensible location it could point to.</span>
+    <span class="c1">// delete y;</span>
+    <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span> <span class="c1">// calls g, handing over a reference to x</span>
+    <span class="nx">h</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span> <span class="c1">// calls h and creates an independent, temporary copy in memory</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">g</span><span class="p">(</span><span class="kt">uint</span><span class="p">[]</span> <span class="k">storage</span> <span class="nx">storageArray</span><span class="p">)</span> <span class="k">internal</span> <span class="p">{}</span>
+  <span class="kd">function</span> <span class="nx">h</span><span class="p">(</span><span class="kt">uint</span><span class="p">[]</span> <span class="nx">memoryArray</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="summary">
+<h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Forced data location:</dt>
+<dd><ul class="first last simple">
+<li>parameters (not return) of external functions: calldata</li>
+<li>state variables: storage</li>
+</ul>
+</dd>
+<dt>Default data location:</dt>
+<dd><ul class="first last simple">
+<li>parameters (also return) of functions: memory</li>
+<li>all other local variables: storage</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="arrays">
+<span id="index-10"></span><span id="id1"></span><h3>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h3>
+<p>Arrays can have a compile-time fixed size or they can be dynamic.
+For storage arrays, the element type can be arbitrary (i.e. also other
+arrays, mappings or structs). For memory arrays, it cannot be a mapping and
+has to be an ABI type if it is an argument of a publicly-visible function.</p>
+<p>An array of fixed size <cite>k</cite> and element type <cite>T</cite> is written as <cite>T[k]</cite>,
+an array of dynamic size as <cite>T[]</cite>. As an example, an array of 5 dynamic
+arrays of <cite>uint</cite> is <cite>uint[][5]</cite> (note that the notation is reversed when
+compared to some other languages). To access the second uint in the
+third dynamic array, you use <cite>x[2][1]</cite> (indices are zero-based and
+access works in the opposite way of the declaration, i.e. <cite>x[2]</cite>
+shaves off one level in the type from the right).</p>
+<p>Variables of type <cite>bytes</cite> and <cite>string</cite> are special arrays. A <cite>bytes</cite> is similar to <cite>byte[]</cite>,
+but it is packed tightly in calldata. <cite>string</cite> is equal to <cite>bytes</cite> but does not allow
+length or index access (for now).</p>
+<p>So <cite>bytes</cite> should always be preferred over <cite>byte[]</cite> because it is cheaper.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you want to access the byte-representation of a string <cite>s</cite>, use
+<cite>bytes(s).length</cite> / <cite>bytes(s)[7] = &#8216;x&#8217;;</cite>. Keep in mind
+that you are accessing the low-level bytes of the utf-8 representation,
+and not the individual characters!</p>
+</div>
+<div class="section" id="members">
+<span id="index-11"></span><h4>Members<a class="headerlink" href="#members" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt><strong>length</strong>:</dt>
+<dd>Arrays have a <cite>length</cite> member to hold their number of elements.
+Dynamic arrays can be resized in storage (not in memory) by changing the
+<cite>.length</cite> member. This does not happen automatically when attempting to access elements outside the current length. The size of memory arrays is fixed (but dynamic, i.e. it can depend on runtime parameters) once they are created.</dd>
+<dt><strong>push</strong>:</dt>
+<dd>Dynamic storage arrays and <cite>bytes</cite> (not <cite>string</cite>) have a member function called <cite>push</cite> that can be used to append an element at the end of the array. The function returns the new length.</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is not yet possible to use arrays of arrays in external functions.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Due to limitations of the EVM, it is not possible to return
+dynamic content from external function calls. The function <cite>f</cite> in
+<cite>contract C { function f() returns (uint[]) { ... } }</cite> will return
+something if called from web3.js, but not if called from Solidity.</p>
+<p class="last">The only workaround for now is to use large statically-sized arrays.</p>
+</div>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">ArrayContract</span> <span class="p">{</span>
+  <span class="kt">uint</span><span class="p">[</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">]</span> <span class="nx">m_aLotOfIntegers</span><span class="p">;</span>
+  <span class="c1">// Note that the following is not a pair of arrays but an array of pairs.</span>
+  <span class="kt">bool</span><span class="p">[</span><span class="mi">2</span><span class="p">][]</span> <span class="nx">m_pairsOfFlags</span><span class="p">;</span>
+  <span class="c1">// newPairs is stored in memory - the default for function arguments</span>
+  <span class="kd">function</span> <span class="nx">setAllFlagPairs</span><span class="p">(</span><span class="kt">bool</span><span class="p">[</span><span class="mi">2</span><span class="p">][]</span> <span class="nx">newPairs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// assignment to a storage array replaces the complete array</span>
+    <span class="nx">m_pairsOfFlags</span> <span class="o">=</span> <span class="nx">newPairs</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">setFlagPair</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">index</span><span class="p">,</span> <span class="kt">bool</span> <span class="nx">flagA</span><span class="p">,</span> <span class="kt">bool</span> <span class="nx">flagB</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// access to a non-existing index will throw an exception</span>
+    <span class="nx">m_pairsOfFlags</span><span class="p">[</span><span class="nx">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">flagA</span><span class="p">;</span>
+    <span class="nx">m_pairsOfFlags</span><span class="p">[</span><span class="nx">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">flagB</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">changeFlagArraySize</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">newSize</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// if the new size is smaller, removed array elements will be cleared</span>
+    <span class="nx">m_pairsOfFlags</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">newSize</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">clear</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// these clear the arrays completely</span>
+    <span class="k">delete</span> <span class="nx">m_pairsOfFlags</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="nx">m_aLotOfIntegers</span><span class="p">;</span>
+    <span class="c1">// identical effect here</span>
+    <span class="nx">m_pairsOfFlags</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kt">bytes</span> <span class="nx">m_byteData</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">byteArrays</span><span class="p">(</span><span class="kt">bytes</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// byte arrays (&quot;bytes&quot;) are different as they are stored without padding,</span>
+    <span class="c1">// but can be treated identical to &quot;uint8[]&quot;</span>
+    <span class="nx">m_byteData</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+    <span class="nx">m_byteData</span><span class="p">.</span><span class="nx">length</span> <span class="o">+=</span> <span class="mi">7</span><span class="p">;</span>
+    <span class="nx">m_byteData</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="nx">m_byteData</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">addFlag</span><span class="p">(</span><span class="kt">bool</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">flag</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">m_pairsOfFlags</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">flag</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">createMemoryArray</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">size</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">bytes</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Dynamic memory arrays are created using `new`:</span>
+    <span class="kt">uint</span><span class="p">[</span><span class="mi">2</span><span class="p">][]</span> <span class="k">memory</span> <span class="nx">arrayOfPairs</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">uint</span><span class="p">[</span><span class="mi">2</span><span class="p">][](</span><span class="nx">size</span><span class="p">);</span>
+    <span class="c1">// Create a dynamic byte array:</span>
+    <span class="kt">bytes</span> <span class="k">memory</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">bytes</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="kt">byte</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">b</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="structs">
+<span id="index-12"></span><h3>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h3>
+<p>Solidity provides a way to define new types in the form of structs, which is
+shown in the following example:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">CrowdFunding</span> <span class="p">{</span>
+  <span class="c1">// Defines a new type with two fields.</span>
+  <span class="kd">struct</span> <span class="nx">Funder</span> <span class="p">{</span>
+    <span class="kt">address</span> <span class="nx">addr</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="nx">amount</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">struct</span> <span class="nx">Campaign</span> <span class="p">{</span>
+    <span class="kt">address</span> <span class="nx">beneficiary</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="nx">fundingGoal</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="nx">numFunders</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="nx">amount</span><span class="p">;</span>
+    <span class="k">mapping</span> <span class="p">(</span><span class="kt">uint</span> <span class="o">=&gt;</span> <span class="nx">Funder</span><span class="p">)</span> <span class="nx">funders</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kt">uint</span> <span class="nx">numCampaigns</span><span class="p">;</span>
+  <span class="k">mapping</span> <span class="p">(</span><span class="kt">uint</span> <span class="o">=&gt;</span> <span class="nx">Campaign</span><span class="p">)</span> <span class="nx">campaigns</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">newCampaign</span><span class="p">(</span><span class="kt">address</span> <span class="nx">beneficiary</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">goal</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">campaignID</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">campaignID</span> <span class="o">=</span> <span class="nx">numCampaigns</span><span class="o">++</span><span class="p">;</span> <span class="c1">// campaignID is return variable</span>
+    <span class="c1">// Creates new struct and saves in storage. We leave out the mapping type.</span>
+    <span class="nx">campaigns</span><span class="p">[</span><span class="nx">campaignID</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Campaign</span><span class="p">(</span><span class="nx">beneficiary</span><span class="p">,</span> <span class="nx">goal</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">contribute</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">campaignID</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">Campaign</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">campaigns</span><span class="p">[</span><span class="nx">campaignID</span><span class="p">];</span>
+        <span class="c1">// Creates a new temporary memory struct, initialised with the given values</span>
+        <span class="c1">// and copies it over to storage.</span>
+        <span class="c1">// Note that you can also use Funder(msg.sender, msg.value) to initialise.</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nx">funders</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">numFunders</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Funder</span><span class="p">({</span><span class="nx">addr</span><span class="o">:</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">amount</span><span class="o">:</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">});</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nx">amount</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">checkGoalReached</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">campaignID</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">bool</span> <span class="nx">reached</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">Campaign</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">campaigns</span><span class="p">[</span><span class="nx">campaignID</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">amount</span> <span class="o">&lt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">fundingGoal</span><span class="p">)</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nx">beneficiary</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">amount</span><span class="p">);</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nx">amount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The contract does not provide the full functionality of a crowdfunding
+contract, but it contains the basic concepts necessary to understand structs.
+Struct types can be used inside mappings and arrays and they can itself
+contain mappings and arrays.</p>
+<p>It is not possible for a struct to contain a member of its own type,
+although the struct itself can be the value type of a mapping member.
+This restriction is necessary, as the size of the struct has to be finite.</p>
+<p>Note how in all the functions, a struct type is assigned to a local variable
+(of the default storage data location).
+This does not copy the struct but only stores a reference so that assignments to
+members of the local variable actually write to the state.</p>
+<p>Of course, you can also directly access the members of the struct without
+assigning it to a local variable, as in
+<cite>campaigns[campaignID].amount = 0</cite>.</p>
+</div>
+</div>
+<div class="section" id="mappings">
+<span id="index-13"></span><h2>Mappings<a class="headerlink" href="#mappings" title="Permalink to this headline">¶</a></h2>
+<p>Mapping types are declared as <cite>mapping _KeyType =&gt; _ValueType</cite>, where
+<cite>_KeyType</cite> can be almost any type except for a mapping and <cite>_ValueType</cite>
+can actually be any type, including mappings.</p>
+<p>Mappings can be seen as hashtables which are virtually initialized such that
+every possible key exists and is mapped to a value whose byte-representation is
+all zeros. The similarity ends here, though: The key data is not actually stored
+in a mapping, only its <cite>sha3</cite> hash used to look up the value.</p>
+<p>Because of this, mappings do not have a length or a concept of a key or value being &#8220;set&#8221;.</p>
+<p>Mappings are only allowed for state variables (or as storage reference types
+in internal functions).</p>
+</div>
+<div class="section" id="operators-involving-lvalues">
+<span id="index-14"></span><h2>Operators Involving LValues<a class="headerlink" href="#operators-involving-lvalues" title="Permalink to this headline">¶</a></h2>
+<p>If <cite>a</cite> is an LValue (i.e. a variable or something that can be assigned to), the following operators are available as shorthands:</p>
+<p><cite>a += e</cite> is equivalent to <cite>a = a + e</cite>. The operators <cite>-=</cite>, <cite>*=</cite>, <cite>/=</cite>, <cite>%=</cite>, <cite>a |=</cite>, <cite>&amp;=</cite> and <cite>^=</cite> are defined accordingly. <cite>a++</cite> and <cite>a&#8211;</cite> are equivalent to <cite>a += 1</cite> / <cite>a -= 1</cite> but the expression itself still has the previous value of <cite>a</cite>. In contrast, <cite>&#8211;a</cite> and <cite>++a</cite> have the same effect on <cite>a</cite> but return the value after the change.</p>
+<div class="section" id="delete">
+<h3>delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h3>
+<p><cite>delete a</cite> assigns the initial value for the type to <cite>a</cite>. I.e. for integers it is equivalent to <cite>a = 0</cite>, but it can also be used on arrays, where it assigns a dynamic array of length zero or a static array of the same length with all elements reset. For structs, it assigns a struct with all members reset.</p>
+<p><cite>delete</cite> has no effect on whole mappings (as the keys of mappings may be arbitrary and are generally unknown). So if you delete a struct, it will reset all members that are not mappings and also recurse into the members unless they are mappings. However, individual keys and what they map to can be deleted.</p>
+<p>It is important to note that <cite>delete a</cite> really behaves like an assignment to <cite>a</cite>, i.e. it stores a new object in <cite>a</cite>.</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">DeleteExample</span> <span class="p">{</span>
+  <span class="kt">uint</span> <span class="nx">data</span><span class="p">;</span>
+  <span class="kt">uint</span><span class="p">[]</span> <span class="nx">dataArray</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">uint</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="nx">x</span><span class="p">;</span> <span class="c1">// sets x to 0, does not affect data</span>
+    <span class="k">delete</span> <span class="nx">data</span><span class="p">;</span> <span class="c1">// sets data to 0, does not affect x which still holds a copy</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">dataArray</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="nx">dataArray</span><span class="p">;</span> <span class="c1">// this sets dataArray.length to zero, but as uint[] is a complex object, also</span>
+    <span class="c1">// y is affected which is an alias to the storage object</span>
+    <span class="c1">// On the other hand: &quot;delete y&quot; is not valid, as assignments to local variables</span>
+    <span class="c1">// referencing storage objects can only be made from existing storage objects.</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="conversions-between-elementary-types">
+<span id="index-15"></span><h2>Conversions between Elementary Types<a class="headerlink" href="#conversions-between-elementary-types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="implicit-conversions">
+<h3>Implicit Conversions<a class="headerlink" href="#implicit-conversions" title="Permalink to this headline">¶</a></h3>
+<p>If an operator is applied to different types, the compiler tries to
+implicitly convert one of the operands to the type of the other (the same is
+true for assignments). In general, an implicit conversion between value-types
+is possible if it
+makes sense semantically and no information is lost: <cite>uint8</cite> is convertible to
+<cite>uint16</cite> and <cite>int128</cite> to <cite>int256</cite>, but <cite>int8</cite> is not convertible to <cite>uint256</cite>
+(because <cite>uint256</cite> cannot hold e.g. <cite>-1</cite>).
+Furthermore, unsigned integers can be converted to bytes of the same or larger
+size, but not vice-versa. Any type that can be converted to <cite>uint160</cite> can also
+be converted to <cite>address</cite>.</p>
+</div>
+<div class="section" id="explicit-conversions">
+<h3>Explicit Conversions<a class="headerlink" href="#explicit-conversions" title="Permalink to this headline">¶</a></h3>
+<p>If the compiler does not allow implicit conversion but you know what you are
+doing, an explicit type conversion is sometimes possible:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kt">int8</span> <span class="nx">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
+<span class="kt">uint</span> <span class="nx">x</span> <span class="o">=</span> <span class="kt">uint</span><span class="p">(</span><span class="nx">y</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>At the end of this code snippet, <cite>x</cite> will have the value <cite>0xfffff..fd</cite> (64 hex
+characters), which is -3 in two&#8217;s complement representation of 256 bits.</p>
+<p>If a type is explicitly converted to a smaller type, higher-order bits are
+cut off:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kt">uint32</span> <span class="nx">a</span> <span class="o">=</span> <span class="mh">0x12345678</span><span class="p">;</span>
+<span class="kt">uint16</span> <span class="nx">b</span> <span class="o">=</span> <span class="kt">uint16</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span> <span class="c1">// b will be 0x5678 now</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="type-deduction">
+<span id="index-16"></span><span id="id2"></span><h2>Type Deduction<a class="headerlink" href="#type-deduction" title="Permalink to this headline">¶</a></h2>
+<p>For convenience, it is not always necessary to explicitly specify the type of a
+variable, the compiler automatically infers it from the type of the first
+expression that is assigned to the variable:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="nx">uint20</span> <span class="nx">x</span> <span class="o">=</span> <span class="mh">0x123</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Here, the type of <cite>y</cite> will be <cite>uint20</cite>. Using <cite>var</cite> is not possible for function
+parameters or return parameters.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The type is only deduced from the first assignment, so
+the loop in the following snippet is infinite, as <cite>i</cite> will have the type
+<cite>uint8</cite> and any value of this type is smaller than <cite>2000</cite>.
+<cite>for (var i = 0; i &lt; 2000; i++) { ... }</cite></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Types</a><ul>
+<li><a class="reference internal" href="#value-types">Value Types</a><ul>
+<li><a class="reference internal" href="#booleans">Booleans</a></li>
+<li><a class="reference internal" href="#integers">Integers</a></li>
+<li><a class="reference internal" href="#address">Address</a><ul>
+<li><a class="reference internal" href="#members-of-addresses">Members of Addresses</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fixed-size-byte-arrays">Fixed-size byte arrays</a></li>
+<li><a class="reference internal" href="#dynamically-sized-byte-array">Dynamically-sized byte array</a></li>
+<li><a class="reference internal" href="#integer-literals">Integer Literals</a></li>
+<li><a class="reference internal" href="#string-literals">String Literals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#enums">Enums</a></li>
+<li><a class="reference internal" href="#reference-types">Reference Types</a><ul>
+<li><a class="reference internal" href="#data-location">Data location</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#arrays">Arrays</a><ul>
+<li><a class="reference internal" href="#members">Members</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#structs">Structs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mappings">Mappings</a></li>
+<li><a class="reference internal" href="#operators-involving-lvalues">Operators Involving LValues</a><ul>
+<li><a class="reference internal" href="#delete">delete</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conversions-between-elementary-types">Conversions between Elementary Types</a><ul>
+<li><a class="reference internal" href="#implicit-conversions">Implicit Conversions</a></li>
+<li><a class="reference internal" href="#explicit-conversions">Explicit Conversions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#type-deduction">Type Deduction</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="structure-of-a-contract.html"
+                        title="previous chapter">Structure of a Contract</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="units-and-global-variables.html"
+                        title="next chapter">Units and Globally Available Variables</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/types.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="units-and-global-variables.html" title="Units and Globally Available Variables"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="structure-of-a-contract.html" title="Structure of a Contract"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" >Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

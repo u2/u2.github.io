@@ -1,0 +1,804 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Frequently Asked Questions &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="prev" title="Common Patterns" href="common-patterns.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="common-patterns.html" title="Common Patterns"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<p>This list was originally compiled by [fivedogit](<a class="reference external" href="mailto:fivedogit&#37;&#52;&#48;gmail&#46;com">mailto:fivedogit<span>&#64;</span>gmail<span>&#46;</span>com</a>).</p>
+<div class="section" id="basic-questions">
+<h2>Basic Questions<a class="headerlink" href="#basic-questions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-is-solidity">
+<h3>What is Solidity?<a class="headerlink" href="#what-is-solidity" title="Permalink to this headline">¶</a></h3>
+<p>Solidity is the DEV-created (i.e. Ethereum Foundation-created),
+Javascript-inspired language that can be used to create smart contracts
+on the Ethereum blockchain. There are other
+languages you can use as well (LLL, Serpent, etc). The main points in
+favour of Solidity is that it is statically typed and offers many
+advanced features like inheritance, libraries, complex
+user-defined types and a bytecode optimizer.</p>
+<p>Solidity contracts can be compiled a few different ways (see below) and the
+resulting output can be cut/pasted into a geth console to deploy them to the
+Ethereum blockchain.</p>
+<p>There are some <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/tree/master/contracts/">contract examples</a> by fivedogit and
+there should be a <a class="reference external" href="https://github.com/ethereum/solidity/blob/develop/test/libsolidity/SolidityEndToEndTest.cpp">test contract</a> for every single feature of Solidity.</p>
+</div>
+<div class="section" id="how-do-i-compile-contracts">
+<h3>How do I compile contracts?<a class="headerlink" href="#how-do-i-compile-contracts" title="Permalink to this headline">¶</a></h3>
+<p>Probably the fastest way is the <a class="reference external" href="https://chriseth.github.io/browser-solidity/">online compiler</a>.</p>
+<p>You can also use the <cite>solc</cite> binary which comes with cpp-ethereum to compile
+contracts or an emerging option is to use Mix, the IDE.</p>
+</div>
+<div class="section" id="create-and-publish-the-most-basic-contract-possible">
+<h3>Create and publish the most basic contract possible<a class="headerlink" href="#create-and-publish-the-most-basic-contract-possible" title="Permalink to this headline">¶</a></h3>
+<p>A quite simple contract is the <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/05_greeter.sol">greeter</a></p>
+</div>
+<div class="section" id="is-it-possible-to-do-something-on-a-specific-block-number-e-g-publish-a-contract-or-execute-a-transaction">
+<h3>Is it possible to do something on a specific block number? (e.g. publish a contract or execute a transaction)<a class="headerlink" href="#is-it-possible-to-do-something-on-a-specific-block-number-e-g-publish-a-contract-or-execute-a-transaction" title="Permalink to this headline">¶</a></h3>
+<p>Transactions are not guaranteed to happen on the next block or any future
+specific block, since it is up to the miners to include transactions and not up
+to the submitter of the transaction. This applies to function calls/transactions and contract
+creation transactions.</p>
+<p>If you want to schedule future calls of your contract, you can use the
+<a class="reference external" href="http://www.ethereum-alarm-clock.com/">alarm clock</a>.</p>
+</div>
+<div class="section" id="what-is-the-transaction-payload">
+<h3>What is the transaction &#8220;payload&#8221;?<a class="headerlink" href="#what-is-the-transaction-payload" title="Permalink to this headline">¶</a></h3>
+<p>This is just the bytecode &#8220;data&#8221; sent along with the request.</p>
+</div>
+<div class="section" id="is-there-a-decompiler-available">
+<h3>Is there a decompiler available?<a class="headerlink" href="#is-there-a-decompiler-available" title="Permalink to this headline">¶</a></h3>
+<p>There is no decompiler to Solidity. This is in principle possible
+to some degree, but for example variable names will be lost and
+great effort will be necessary to make it look similar to
+the original source code.</p>
+<p>Bytecode can be decompiled to opcodes, a service that is provided by
+several blockchain explorers.</p>
+<p>Contracts on the blockchain should have their original source
+code published if they are to be used by third parties.</p>
+</div>
+<div class="section" id="does-selfdestruct-free-up-space-in-the-blockchain">
+<h3>Does selfdestruct() free up space in the blockchain?<a class="headerlink" href="#does-selfdestruct-free-up-space-in-the-blockchain" title="Permalink to this headline">¶</a></h3>
+<p>It removes the contract bytecode and storage from the current block
+into the future, but since the blockchain stores every single block (i.e.
+all history), this will not actually free up space on full/achive nodes.</p>
+</div>
+<div class="section" id="create-a-contract-that-can-be-killed-and-return-funds">
+<h3>Create a contract that can be killed and return funds<a class="headerlink" href="#create-a-contract-that-can-be-killed-and-return-funds" title="Permalink to this headline">¶</a></h3>
+<p>First, a word of warning: Killing contracts sounds like a good idea, because &#8220;cleaning up&#8221;
+is always good, but as seen above, it does not really clean up. Furthermore,
+if Ether is sent to removed contracts, the Ether will be forever lost.</p>
+<p>If you want to deactivate your contracts, rather <strong>disable</strong> them by changing some
+internal state which causes all functions to throw. This will make it impossible
+to use the contract and ether sent to the contract will be returned automatically.</p>
+<p>Now to answering the question: Inside a constructor, <cite>msg.sender</cite> is the
+creator. Save it. Then <cite>selfdestruct(creator);</cite> to kill and return funds.</p>
+<p><a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/05_greeter.sol">example</a></p>
+<p>Note that if you <cite>import &#8220;mortal&#8221;</cite> at the top of your contracts and declare
+<cite>contract SomeContract is mortal { ...</cite> and compile with a compiler that already
+has it (which includes <a class="reference external" href="https://chriseth.github.io/browser-solidity/">browser-solidity</a>), then
+<cite>kill()</cite> is taken care of for you. Once a contract is &#8220;mortal&#8221;, then you can
+<cite>contractname.kill.sendTransaction({from:eth.coinbase})</cite>, just the same as my
+examples.</p>
+</div>
+<div class="section" id="store-ether-in-a-contract">
+<h3>Store Ether in a contract<a class="headerlink" href="#store-ether-in-a-contract" title="Permalink to this headline">¶</a></h3>
+<p>The trick is to create the contract with <cite>{from:someaddress, value: web3.toWei(3,&#8221;ether&#8221;)...}</cite></p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol">endowment_retriever.sol</a>.</p>
+</div>
+<div class="section" id="use-a-non-constant-function-req-sendtransaction-to-increment-a-variable-in-a-contract">
+<h3>Use a non-constant function (req sendTransaction) to increment a variable in a contract<a class="headerlink" href="#use-a-non-constant-function-req-sendtransaction-to-increment-a-variable-in-a-contract" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/20_value_incrementer.sol">value_incrementer.sol</a>.</p>
+</div>
+<div class="section" id="get-contract-address-in-solidity">
+<h3>Get contract address in Solidity<a class="headerlink" href="#get-contract-address-in-solidity" title="Permalink to this headline">¶</a></h3>
+<p>Short answer: The global variable <cite>this</cite> is the contract address.</p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/15_basic_info_getter.sol">basic_info_getter</a>.</p>
+<p>Long answer: <cite>this</cite> is a variable representing the current contract.
+Its type is the type of the contract. Since any contract type basically inherits from the
+<cite>address</cite> type, <cite>this</cite> is always convertible to <cite>address</cite> and in this case contains
+its own address.</p>
+</div>
+<div class="section" id="what-is-the-difference-between-a-function-marked-constant-and-one-that-is-not">
+<h3>What is the difference between a function marked constant and one that is not?<a class="headerlink" href="#what-is-the-difference-between-a-function-marked-constant-and-one-that-is-not" title="Permalink to this headline">¶</a></h3>
+<p><cite>constant</cite> functions can perform some action and return a value, but cannot
+change state (this is not yet enforced by the compiler). In other words, a
+constant function cannot save or update any variables within the contract or wider
+blockchain. These functions are called using <cite>c.someFunction(...)</cite> from
+geth or any other web3.js environment.</p>
+<p>&#8220;non-constant&#8221; functions (those lacking the <cite>constant</cite> specifier) must be called
+with <cite>c.someMethod.sendTransaction({from:eth.accounts[x], gas: 1000000});</cite>
+That is, because they can change state, they have to have a gas
+payment sent along to get the work done.</p>
+</div>
+<div class="section" id="get-a-contract-to-return-its-funds-to-you-not-using-selfdestruct">
+<h3>Get a contract to return its funds to you (not using selfdestruct(...)).<a class="headerlink" href="#get-a-contract-to-return-its-funds-to-you-not-using-selfdestruct" title="Permalink to this headline">¶</a></h3>
+<p>This example demonstrates how to send funds from a contract to an address.</p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/30_endowment_retriever.sol">endowment_retriever</a>.</p>
+</div>
+<div class="section" id="what-is-a-mapping-and-how-do-we-use-them">
+<h3>What is a mapping and how do we use them?<a class="headerlink" href="#what-is-a-mapping-and-how-do-we-use-them" title="Permalink to this headline">¶</a></h3>
+<p>A mapping is very similar to a K-&gt;V hashmap.
+If you have a state variable of type <cite>mapping (string -&gt; uint) x;</cite>, then you can
+access the value by <cite>x[&#8220;somekeystring&#8221;]</cite>.</p>
+</div>
+<div class="section" id="how-can-i-get-the-length-of-a-mapping">
+<h3>How can I get the length of a mapping?<a class="headerlink" href="#how-can-i-get-the-length-of-a-mapping" title="Permalink to this headline">¶</a></h3>
+<p>Mappings are a rather low-level data structure. It does not store the keys
+and it is not possible to know which or how many values are &#8220;set&#8221;. Actually,
+all values to all possible keys are set by default, they are just
+initialised with the zero value.</p>
+<p>In this sense, the attribute <cite>length</cite> for a mapping does not really apply.</p>
+<p>If you want to have a &#8220;sized mapping&#8221;, you can use the iterable mapping
+(see below) or just a dynamically-sized array of structs.</p>
+</div>
+<div class="section" id="are-mappings-iterable">
+<h3>Are mappings iterable?<a class="headerlink" href="#are-mappings-iterable" title="Permalink to this headline">¶</a></h3>
+<p>Mappings themselves are not iterable, but you can use a higher-level
+datastructure on top of it, for example the <a class="reference external" href="https://github.com/ethereum/dapp-bin/blob/master/library/iterable_mapping.sol">iterable mapping</a>.</p>
+</div>
+<div class="section" id="can-you-return-an-array-or-a-string-from-a-solidity-function-call">
+<h3>Can you return an array or a string from a solidity function call?<a class="headerlink" href="#can-you-return-an-array-or-a-string-from-a-solidity-function-call" title="Permalink to this headline">¶</a></h3>
+<p>Yes. See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/60_array_receiver_and_returner.sol">array_receiver_and_returner.sol</a>.</p>
+<p>What is problematic, though, is returning any variably-sized data (e.g. a
+variably-sized array like <cite>uint[]</cite>) from a fuction <strong>called from within Solidity</strong>.
+This is a limitation of the EVM and will be solved with the next protocol update.</p>
+<p>Returning variably-sized data as part of an external transaction or call is fine.</p>
+</div>
+<div class="section" id="how-do-you-represent-double-float-in-solidity">
+<h3>How do you represent double/float in Solidity?<a class="headerlink" href="#how-do-you-represent-double-float-in-solidity" title="Permalink to this headline">¶</a></h3>
+<p>This is not yet possible.</p>
+</div>
+<div class="section" id="is-it-possible-to-in-line-initialize-an-array-like-so-string32-myarray-a-b">
+<h3>Is it possible to in-line initialize an array like so: string32[] myarray = [&#8220;a&#8221;, &#8220;b&#8221;];<a class="headerlink" href="#is-it-possible-to-in-line-initialize-an-array-like-so-string32-myarray-a-b" title="Permalink to this headline">¶</a></h3>
+<p>This is not yet possible.</p>
+</div>
+<div class="section" id="what-are-events-and-why-do-we-need-them">
+<h3>What are events and why do we need them?<a class="headerlink" href="#what-are-events-and-why-do-we-need-them" title="Permalink to this headline">¶</a></h3>
+<p>Let us suppose that you need a contract to alert the outside world when
+something happens. The contract can fire an event, which can be listened to
+from web3 (inside geth or a web application). The main advantage of events
+is that they are stored in a special way on the blockchain so that it
+is very easy to search for them.</p>
+</div>
+<div class="section" id="what-are-the-different-function-visibilities">
+<h3>What are the different function visibilities?<a class="headerlink" href="#what-are-the-different-function-visibilities" title="Permalink to this headline">¶</a></h3>
+<p>The visibility specifiers do not only change the visibility but also
+the way functions can be called. In general, functions in the
+same contract can also be called internally (which is cheaper
+and allows for memory types to be passed by reference). This
+is done if you just use <cite>f(1,2)</cite>. If you use <cite>this.f(1,2)</cite>
+or <cite>otherContract.f(1,2)</cite>, the function is called externally.</p>
+<p>Internal function calls have the advantage that you can use
+all Solidity types as parameters, but you have to stick to the
+simpler ABI types for external calls.</p>
+<ul class="simple">
+<li>external: all, only externally</li>
+<li>public: all (this is the default), externally and internally</li>
+<li>internal: only this contract and contracts deriving from it, only internally</li>
+<li>private: only this contract, only internally</li>
+</ul>
+</div>
+<div class="section" id="do-contract-constructors-have-to-be-publicly-visible">
+<h3>Do contract constructors have to be publicly visible?<a class="headerlink" href="#do-contract-constructors-have-to-be-publicly-visible" title="Permalink to this headline">¶</a></h3>
+<p>You can use the visibility specifiers, but they do not yet have any effect.
+The constructor is removed from the contract code once it is deployed,</p>
+</div>
+<div class="section" id="can-a-contract-have-multiple-constructors">
+<h3>Can a contract have multiple constructors?<a class="headerlink" href="#can-a-contract-have-multiple-constructors" title="Permalink to this headline">¶</a></h3>
+<p>No, a contract can have only one constructor.</p>
+<p>More specifically, it can only have one function whose name matches
+that of the constructor.</p>
+<p>Having multiple constructors with different number of arguments
+or argument types, as it is possible in other languages
+is not allowed in Solidity.</p>
+</div>
+<div class="section" id="is-a-constructor-required">
+<h3>Is a constructor required?<a class="headerlink" href="#is-a-constructor-required" title="Permalink to this headline">¶</a></h3>
+<p>No. If there is no constructor, a generic one without arguments and no actions will be used.</p>
+</div>
+<div class="section" id="are-timestamps-now-block-timestamp-reliable">
+<h3>Are timestamps (now, block.timestamp) reliable?<a class="headerlink" href="#are-timestamps-now-block-timestamp-reliable" title="Permalink to this headline">¶</a></h3>
+<p>This depends on what you mean by &#8220;reliable&#8221;.
+In general, they are supplied by miners and are therefore vulnerable.</p>
+<p>Unless someone really messes up the blockchain or the clock on
+your computer, you can make the following assumptions:</p>
+<p>You publish a transaction at a time X, this transaction contains same
+code that calls <cite>now</cite> and is included in a block whose timestamp is Y
+and this block is included into the canonical chain (published) at a time Z.</p>
+<p>The value of <cite>now</cite> will be identical to Y and X &lt;= Y &lt;= Z.</p>
+<p>Never use <cite>now</cite> or <cite>block.hash</cite> as a source of randomness, unless you know
+what you are doing!</p>
+</div>
+<div class="section" id="can-a-contract-function-return-a-struct">
+<h3>Can a contract function return a struct?<a class="headerlink" href="#can-a-contract-function-return-a-struct" title="Permalink to this headline">¶</a></h3>
+<p>Yes, but only in &#8220;internal&#8221; function calls.</p>
+</div>
+<div class="section" id="if-i-return-an-enum-i-only-get-integer-values-in-web3-js-how-to-get-the-named-values">
+<h3>If I return an enum, I only get integer values in web3.js. How to get the named values?<a class="headerlink" href="#if-i-return-an-enum-i-only-get-integer-values-in-web3-js-how-to-get-the-named-values" title="Permalink to this headline">¶</a></h3>
+<p>Enums are not supported by the ABI, they are just supported by Solidity.
+You have to do the mapping yourself for now, we might provide some help
+later.</p>
+</div>
+<div class="section" id="what-is-the-deal-with-function-inside-solidity-contracts-how-can-a-function-not-have-a-name">
+<h3>What is the deal with &#8220;function () { ... }&#8221; inside Solidity contracts? How can a function not have a name?<a class="headerlink" href="#what-is-the-deal-with-function-inside-solidity-contracts-how-can-a-function-not-have-a-name" title="Permalink to this headline">¶</a></h3>
+<p>This function is called &#8220;fallback function&#8221; and it
+is called when someone just sent Ether to the contract without
+providing any data or if someone messed up the types so that they tried to
+call a function that does not exist.</p>
+<p>The default behaviour (if no fallback function is explicitly given) in
+these situations is to just accept the call and do nothing.
+This is desireable in many cases, but should only be used if there is
+a way to pull out Ether from a contract.</p>
+<p>If the contract is not meant to receive Ether with simple transfers, you
+should implement the fallback function as</p>
+<p><cite>function() { throw; }</cite></p>
+<p>this will cause all transactions to this contract that do not call an
+existing function to be reverted, so that all Ether is sent back.</p>
+<p>Another use of the fallback function is to e.g. register that your
+contract received ether by using an event.</p>
+<p><em>Attention</em>: If you implement the fallback function take care that it uses as
+little gas as possible, because <cite>send()</cite> will only supply a limited amount.</p>
+</div>
+<div class="section" id="is-it-possible-to-pass-arguments-to-the-fallback-function">
+<h3>Is it possible to pass arguments to the fallback function?<a class="headerlink" href="#is-it-possible-to-pass-arguments-to-the-fallback-function" title="Permalink to this headline">¶</a></h3>
+<p>The fallback function cannot take parameters.</p>
+<p>Under special circumstances, you can send data. If you take care
+that none of the other functions is invoked, you can access the data
+by <cite>msg.data</cite>.</p>
+</div>
+<div class="section" id="can-state-variables-be-initialized-in-line">
+<h3>Can state variables be initialized in-line?<a class="headerlink" href="#can-state-variables-be-initialized-in-line" title="Permalink to this headline">¶</a></h3>
+<p>Yes, this is possible for most types (even for structs), but not for arrays.</p>
+<p>Examples:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kd">struct</span> <span class="nx">S</span> <span class="p">{</span> <span class="kt">uint</span> <span class="nx">a</span><span class="p">;</span> <span class="kt">uint</span> <span class="nx">b</span><span class="p">;</span> <span class="p">}</span>
+    <span class="nx">S</span> <span class="k">public</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">S</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="kt">string</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Ada&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">contract</span> <span class="nx">D</span> <span class="p">{</span>
+    <span class="nx">C</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">C</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-is-the-modifier-keyword">
+<h3>What is the &#8220;modifier&#8221; keyword?<a class="headerlink" href="#what-is-the-modifier-keyword" title="Permalink to this headline">¶</a></h3>
+<p>Modifiers are a way to prepend or append code to a function in order
+to add guards, initialisation or cleanup functionality in a concise way.</p>
+<p>For examples, see the <a class="reference external" href="https://github.com/ethereum/dapp-bin/blob/master/library/features.sol">features.sol</a>.</p>
+</div>
+<div class="section" id="how-do-structs-work">
+<h3>How do structs work?<a class="headerlink" href="#how-do-structs-work" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol">struct_and_for_loop_tester.sol</a>.</p>
+</div>
+<div class="section" id="how-do-for-loops-work">
+<h3>How do for loops work?<a class="headerlink" href="#how-do-for-loops-work" title="Permalink to this headline">¶</a></h3>
+<p>Very similar to JavaScript. There is one point to watch out for, though:</p>
+<p>If you use <cite>for (var i = 0; i &lt; a.length; i ++) { a[i] = i; }</cite>, then
+the type of <cite>i</cite> will be inferred only from <cite>0</cite>, whose type is <cite>uint8</cite>.
+This means that if <cite>a</cite> has more than <cite>255</cite> elements, your loop will
+not terminate because <cite>i</cite> can only hold values up to <cite>255</cite>.</p>
+<p>Better use <cite>for (uint i = 0; i &lt; a.length...</cite></p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/65_struct_and_for_loop_tester.sol">struct_and_for_loop_tester.sol</a>.</p>
+</div>
+<div class="section" id="what-character-set-does-solidity-use">
+<h3>What character set does Solidity use?<a class="headerlink" href="#what-character-set-does-solidity-use" title="Permalink to this headline">¶</a></h3>
+<p>Solidity is character set agnostic concerning strings in the source code, although
+utf-8 is recommended. Identifiers (variables, functions, ...) can only use
+ASCII.</p>
+</div>
+<div class="section" id="what-are-some-examples-of-basic-string-manipulation-substring-indexof-charat-etc">
+<h3>What are some examples of basic string manipulation (substring, indexOf, charAt, etc)?<a class="headerlink" href="#what-are-some-examples-of-basic-string-manipulation-substring-indexof-charat-etc" title="Permalink to this headline">¶</a></h3>
+<p>There are some string utility functions at <a class="reference external" href="https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol">stringUtils.sol</a>
+which will be extended in the future.</p>
+<p>For now, if you want to modify a string (even when you only want to know its length),
+you should always convert it to a <cite>bytes</cite> first:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kt">string</span> <span class="nx">s</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">append</span><span class="p">(</span><span class="kt">byte</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">bytes</span><span class="p">(</span><span class="nx">s</span><span class="p">).</span><span class="nx">push</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">set</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">i</span><span class="p">,</span> <span class="kt">byte</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">bytes</span><span class="p">(</span><span class="nx">s</span><span class="p">)[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">c</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="can-i-concatenate-two-strings">
+<h3>Can I concatenate two strings?<a class="headerlink" href="#can-i-concatenate-two-strings" title="Permalink to this headline">¶</a></h3>
+<p>You have to do it manually for now.</p>
+</div>
+<div class="section" id="why-is-the-low-level-function-call-less-favorable-than-instantiating-a-contract-with-a-variable-contractb-b-and-executing-its-functions-b-dosomething">
+<h3>Why is the low-level function .call() less favorable than instantiating a contract with a variable (ContractB b;) and executing its functions (b.doSomething();)?<a class="headerlink" href="#why-is-the-low-level-function-call-less-favorable-than-instantiating-a-contract-with-a-variable-contractb-b-and-executing-its-functions-b-dosomething" title="Permalink to this headline">¶</a></h3>
+<p>If you use actual functions, the compiler will tell you if the types
+or your arguments do not match, if the function does not exist
+or is not visible and it will do the packing of the
+arguments for you.</p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol">ping.sol</a> and
+<a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_pong.sol">pong.sol</a>.</p>
+</div>
+<div class="section" id="is-unused-gas-automatically-refunded">
+<h3>Is unused gas automatically refunded?<a class="headerlink" href="#is-unused-gas-automatically-refunded" title="Permalink to this headline">¶</a></h3>
+<p>Yes and it is immediate, i.e. done as part of the transaction.</p>
+</div>
+<div class="section" id="when-returning-a-value-of-say-uint-type-is-it-possible-to-return-an-undefined-or-null-like-value">
+<h3>When returning a value of say &#8220;uint&#8221; type, is it possible to return an &#8220;undefined&#8221; or &#8220;null&#8221;-like value?<a class="headerlink" href="#when-returning-a-value-of-say-uint-type-is-it-possible-to-return-an-undefined-or-null-like-value" title="Permalink to this headline">¶</a></h3>
+<p>This is not possible, because all types use up the full value range.</p>
+<p>You have the option to <cite>throw</cite> on error, which will also revert the whole
+transaction, which might be a good idea if you ran into an unexpected
+situation.</p>
+<p>If you do not want to throw, you can return a pair:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">counters</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">getCounter</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">index</span><span class="p">)</span>
+        <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">counter</span><span class="p">,</span> <span class="kt">bool</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">&gt;=</span> <span class="nx">counters</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+            <span class="k">else</span> <span class="k">return</span> <span class="p">(</span><span class="nx">counters</span><span class="p">[</span><span class="nx">index</span><span class="p">],</span> <span class="kc">false</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">checkCounter</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="p">(</span><span class="nx">counter</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="o">=</span> <span class="nx">getCounter</span><span class="p">(</span><span class="nx">index</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="are-comments-included-with-deployed-contracts-and-do-they-increase-deployment-gas">
+<h3>Are comments included with deployed contracts and do they increase deployment gas?<a class="headerlink" href="#are-comments-included-with-deployed-contracts-and-do-they-increase-deployment-gas" title="Permalink to this headline">¶</a></h3>
+<p>No, everything that is not needed for execution is removed during compilation.
+This includes, among others, comments, variable names and type names.</p>
+</div>
+<div class="section" id="what-happens-if-you-send-ether-along-with-a-function-call-to-a-contract">
+<h3>What happens if you send ether along with a function call to a contract?<a class="headerlink" href="#what-happens-if-you-send-ether-along-with-a-function-call-to-a-contract" title="Permalink to this headline">¶</a></h3>
+<p>It gets added to the total balance of the contract, just like when you send ether when creating a contract.</p>
+</div>
+<div class="section" id="is-it-possible-to-get-a-tx-receipt-for-a-transaction-executed-contract-to-contract">
+<h3>Is it possible to get a tx receipt for a transaction executed contract-to-contract?<a class="headerlink" href="#is-it-possible-to-get-a-tx-receipt-for-a-transaction-executed-contract-to-contract" title="Permalink to this headline">¶</a></h3>
+<p>No, a function call from one contract to another does not create its own transaction,
+you have to look in the overall transaction. This is also the reason why several
+block explorer do not show Ether sent between contracts correctly.</p>
+</div>
+<div class="section" id="what-is-the-memory-keyword-what-does-it-do">
+<h3>What is the memory keyword? What does it do?<a class="headerlink" href="#what-is-the-memory-keyword-what-does-it-do" title="Permalink to this headline">¶</a></h3>
+<p>The Ethereum Virtual Machine has three areas where it can store items.</p>
+<p>The first is &#8220;storage&#8221;, where all the contract state variables reside.
+Every contract has its own storage and it is persistent between function calls
+and quite expensive to use.</p>
+<p>The second is &#8220;memory&#8221;, this is used to hold temporary values. It
+is erased between (external) function calls and is cheaper to use.</p>
+<p>The third one is the stack, which is used to hold small local variables.
+It is almost free to use, but can only hold a limited amount of values.</p>
+<p>For almost all types, you cannot specify where they should be stored, because
+they are copied everytime they are used.</p>
+<p>The types where the so-called storage location is important are structs
+and arrays. If you e.g. pass such variables in function calls, their
+data is not copied if it can stay in memory or stay in storage.
+This means that you can modify their content in the called function
+and these modifications will still be visible in the caller.</p>
+<p>There are defaults for the storage location depending on which type
+of variable it concerns:</p>
+<ul class="simple">
+<li>state variables are always in storage</li>
+<li>function arguments are always in memory</li>
+<li>local variables always reference storage</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">data1</span><span class="p">;</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">data2</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">appendOne</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">append</span><span class="p">(</span><span class="nx">data1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">appendTwo</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">append</span><span class="p">(</span><span class="nx">data2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">append</span><span class="p">(</span><span class="kt">uint</span><span class="p">[]</span> <span class="k">storage</span> <span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">d</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The function <cite>append</cite> can work both on <cite>data1</cite> and <cite>data2</cite> and its modifications will be
+stored permanently. If you remove the <cite>storage</cite> keyword, the default
+is to use <cite>memory</cite> for function arguments. This has the effect that
+at the point where <cite>append(data1)</cite> or <cite>append(data2)</cite> is called, an
+independent copy of the state variable is created in memory and
+<cite>append</cite> operates on this copy (which does not support <cite>.push</cite> - but that
+is another issue). The modifications to this independent copy do not
+carry back to <cite>data1</cite> or <cite>data2</cite>.</p>
+<p>A common mistake is to declare a local variable and assume that it will
+be created in memory, although it will be created in storage:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="cs">/// THIS CONTRACT CONTAINS AN ERROR</span>
+<span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kt">uint</span> <span class="nx">someVariable</span><span class="p">;</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">data</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">uint</span><span class="p">[]</span> <span class="nx">x</span><span class="p">;</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The type of the local variable <cite>x</cite> is <cite>uint[] storage</cite>, but since
+storage is not dynamically allocated, it has to be assigned from
+a state variable before it can be used. So no space in storage will be
+allocated for <cite>x</cite>, but instead it functions only as an alias for
+a pre-existing variable in storage.</p>
+<p>What will happen is that the compiler interprets <cite>x</cite> as a storage
+pointer and will make it point to the storage slot <cite>0</cite> by default.
+This has the effect that <cite>someVariable</cite> (which resides at storage
+slot <cite>0</cite>) is modified by <cite>x.push(2)</cite>.</p>
+<p>The correct way to do this is the following:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+    <span class="kt">uint</span> <span class="nx">someVariable</span><span class="p">;</span>
+    <span class="kt">uint</span><span class="p">[]</span> <span class="nx">data</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">uint</span><span class="p">[]</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="can-a-regular-i-e-non-contract-ethereum-account-be-closed-permanently-like-a-contract-can">
+<h3>Can a regular (i.e. non-contract) ethereum account be closed permanently like a contract can?<a class="headerlink" href="#can-a-regular-i-e-non-contract-ethereum-account-be-closed-permanently-like-a-contract-can" title="Permalink to this headline">¶</a></h3>
+<p>No. Non-contract accounts &#8220;exist&#8221; as long as the private key is known by
+someone or can be generated in some way.</p>
+</div>
+<div class="section" id="what-is-the-difference-between-bytes-and-byte">
+<h3>What is the difference between <cite>bytes</cite> and <cite>byte[]</cite>?<a class="headerlink" href="#what-is-the-difference-between-bytes-and-byte" title="Permalink to this headline">¶</a></h3>
+<p><cite>bytes</cite> is usually more efficient: When used as arguments to functions (i.e. in
+CALLDATA) or in memory, every single element of a <cite>byte[]</cite> is padded to 32
+bytes which wastes 31 bytes per element.</p>
+</div>
+<div class="section" id="is-it-possible-to-send-a-value-while-calling-an-overloaded-function">
+<h3>Is it possible to send a value while calling an overloaded function?<a class="headerlink" href="#is-it-possible-to-send-a-value-while-calling-an-overloaded-function" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s a known missing feature. <a class="reference external" href="https://www.pivotaltracker.com/story/show/92020468">https://www.pivotaltracker.com/story/show/92020468</a>
+as part of <a class="reference external" href="https://www.pivotaltracker.com/n/projects/1189488">https://www.pivotaltracker.com/n/projects/1189488</a></p>
+<p>Best solution currently see is to introduce a special case for gas and value and
+just re-check whether they are present at the point of overload resolution.</p>
+</div>
+</div>
+<div class="section" id="advanced-questions">
+<h2>Advanced Questions<a class="headerlink" href="#advanced-questions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-do-you-get-a-random-number-in-a-contract-implement-a-self-returning-gambling-contract">
+<h3>How do you get a random number in a contract? (Implement a self-returning gambling contract.)<a class="headerlink" href="#how-do-you-get-a-random-number-in-a-contract-implement-a-self-returning-gambling-contract" title="Permalink to this headline">¶</a></h3>
+<p>Getting randomness right is often the crucial part in a crypto project and
+most failures result from bad random number generators.</p>
+<p>If you do not want it to be safe, you build something similar to the <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/35_coin_flipper.sol">coin flipper</a>
+but otherwise, rather use a contract that supplies randomness, like the <a class="reference external" href="https://github.com/randao/randao">RANDAO</a>.</p>
+</div>
+<div class="section" id="get-return-value-from-non-constant-function-from-another-contract">
+<h3>Get return value from non-constant function from another contract<a class="headerlink" href="#get-return-value-from-non-constant-function-from-another-contract" title="Permalink to this headline">¶</a></h3>
+<p>The key point is that the calling contract needs to know about the function it intends to call.</p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_ping.sol">ping.sol</a>
+and <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/45_pong.sol">pong.sol</a>.</p>
+</div>
+<div class="section" id="get-contract-to-do-something-when-it-is-first-mined">
+<h3>Get contract to do something when it is first mined<a class="headerlink" href="#get-contract-to-do-something-when-it-is-first-mined" title="Permalink to this headline">¶</a></h3>
+<p>Use the constructor. Anything inside it will be executed when the contract is first mined.</p>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol">replicator.sol</a>.</p>
+</div>
+<div class="section" id="can-a-contract-create-another-contract">
+<h3>Can a contract create another contract?<a class="headerlink" href="#can-a-contract-create-another-contract" title="Permalink to this headline">¶</a></h3>
+<p>Yes, see <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/50_replicator.sol">replicator.sol</a>.</p>
+<p>Note that the full code of the created contract has to be included in the creator contract.
+This also means that cyclic creations are not possible (because the contract would have
+to contain its own code) - at least not in a general way.</p>
+</div>
+<div class="section" id="how-do-you-create-2-dimensional-arrays">
+<h3>How do you create 2-dimensional arrays?<a class="headerlink" href="#how-do-you-create-2-dimensional-arrays" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="https://github.com/fivedogit/solidity-baby-steps/blob/master/contracts/55_2D_array.sol">2D_array.sol</a>.</p>
+<p>Note that filling a 10x10 square of <cite>uint8</cite> + contract creation took more than <cite>800,000</cite>
+gas at the time of this writing. 17x17 took <cite>2,000,000</cite> gas. With the limit at
+3.14 million... well, there’s a pretty low ceiling for what you can create right
+now.</p>
+<p>Note that merely &#8220;creating&#8221; the array is free, the costs are in filling it.</p>
+<p>Note2: Optimizing storage access can pull the gas costs down considerably, because
+32 <cite>uint8</cite> values can be stored in a single slot. The problem is that these optimizations
+currently do not work across loops and also have a problem with bounds checking.
+You might get much better results in the future, though.</p>
+</div>
+<div class="section" id="what-does-p-recipient-call-value-p-amount-p-data-do">
+<h3>What does p.recipient.call.value(p.amount)(p.data) do?<a class="headerlink" href="#what-does-p-recipient-call-value-p-amount-p-data-do" title="Permalink to this headline">¶</a></h3>
+<p>Every external function call in Solidity can be modified in two ways:</p>
+<ol class="arabic simple">
+<li>You can add Ether together with the call</li>
+<li>You can limit the amount of gas available to the call</li>
+</ol>
+<p>This is done by &#8220;calling a function on the function&#8221;:</p>
+<p><cite>f.gas(2).value(20)()</cite> calls the modified function <cite>f</cite> and thereby sending 20
+Wei and limiting the gas to 2 (so this function call will most likely go out of
+gas and return your 20 Wei).</p>
+<p>In the above example, the low-level function <cite>call</cite> is used to invoke another
+contract with <cite>p.data</cite> as payload and <cite>p.amount</cite> Wei is sent with that call.</p>
+</div>
+<div class="section" id="can-a-contract-function-accept-a-two-dimensional-array">
+<h3>Can a contract function accept a two-dimensional array?<a class="headerlink" href="#can-a-contract-function-accept-a-two-dimensional-array" title="Permalink to this headline">¶</a></h3>
+<p>This is not yet implemented for external calls and dynamic arrays -
+you can only use one level of dynamic arrays.</p>
+</div>
+<div class="section" id="what-is-the-relationship-between-bytes32-and-string-why-is-it-that-bytes32-somevar-stringliteral-works-and-what-does-the-saved-32-byte-hex-value-mean">
+<h3>What is the relationship between bytes32 and string? Why is it that ‘bytes32 somevar = &#8220;stringliteral&#8221;;’ works and what does the saved 32-byte hex value mean?<a class="headerlink" href="#what-is-the-relationship-between-bytes32-and-string-why-is-it-that-bytes32-somevar-stringliteral-works-and-what-does-the-saved-32-byte-hex-value-mean" title="Permalink to this headline">¶</a></h3>
+<p>The type <cite>bytes32</cite> can hold 32 (raw) bytes. In the assignment <cite>bytes32 samevar = &#8220;stringliteral&#8221;;</cite>,
+the string literal is interpreted in its raw byte form and if you inspect <cite>somevar</cite> and
+see a 32-byte hex value, this is just <cite>&#8220;stringliteral&#8221;</cite> in hex.</p>
+<p>The type <cite>bytes</cite> is similar, only that it can change its length.</p>
+<p>Finally, <cite>string</cite> is basically identical to <cite>bytes</cite> only that it is assumed
+to hold the utf-8 encoding of a real string. Since <cite>string</cite> stores the
+data in utf-8 encoding it is quite expensive to compute the number of
+characters in the string (the encoding of some characters takes more
+than a single byte). Because of that, <cite>string s; s.length</cite> is not yet
+supported and not even index access <cite>s[2]</cite>. But if you want to access
+the low-level byte encoding of the string, you can use
+<cite>bytes(s).length</cite> and <cite>bytes(s)[2]</cite> which will result in the number
+of bytes in the utf-8 encoding of the string (not the number of
+characters) and the second byte (not character) of the utf-8 encoded
+string, respectively.</p>
+</div>
+<div class="section" id="can-a-contract-pass-an-array-static-size-or-string-or-bytes-dynamic-size-to-another-contract">
+<h3>Can a contract pass an array (static size) or string or bytes (dynamic size) to another contract?<a class="headerlink" href="#can-a-contract-pass-an-array-static-size-or-string-or-bytes-dynamic-size-to-another-contract" title="Permalink to this headline">¶</a></h3>
+<p>Sure. Take care that if you cross the memory / storage boundary,
+independent copies will be created:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">C</span> <span class="p">{</span>
+  <span class="kt">uint</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+    <span class="nx">h</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">g</span><span class="p">(</span><span class="kt">uint</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">h</span><span class="p">(</span><span class="kt">uint</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="k">storage</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">y</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+<p>The call to <cite>g(x)</cite> will not have an effect on <cite>x</cite> because it needs
+to create an independent copy of the storage value in memory
+(the default storage location is memory). On the other hand,
+<cite>h(x)</cite> successfully modifies <cite>x</cite> because only a reference
+and not a copy is passed.</p>
+</div>
+<div class="section" id="sometimes-when-i-try-to-change-the-length-of-an-array-with-ex-arrayname-length-7-i-get-a-compiler-error-value-must-be-an-lvalue-why">
+<h3>Sometimes, when I try to change the length of an array with ex: &#8220;arrayname.length = 7;&#8221; I get a compiler error &#8220;Value must be an lvalue&#8221;. Why?<a class="headerlink" href="#sometimes-when-i-try-to-change-the-length-of-an-array-with-ex-arrayname-length-7-i-get-a-compiler-error-value-must-be-an-lvalue-why" title="Permalink to this headline">¶</a></h3>
+<p>You can resize a dynamic array in storage (i.e. an array declared at the
+contract level) with <cite>arrayname.length = &lt;some new length&gt;;</cite>. If you get the
+&#8220;lvalue&#8221; error, you are probably doing one of two things wrong.</p>
+<ol class="arabic simple">
+<li>You might be trying to resize an array in &#8220;memory&#8221;, or</li>
+<li>You might be trying to resize a non-dynamic array.</li>
+</ol>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kt">int8</span><span class="p">[]</span> <span class="k">memory</span> <span class="nx">memArr</span><span class="p">;</span>       <span class="c1">// Case 1</span>
+<span class="nx">memArr</span><span class="p">.</span><span class="nx">length</span><span class="o">++</span><span class="p">;</span>            <span class="c1">// illegal</span>
+<span class="kt">int8</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="nx">storageArr</span><span class="p">;</span>         <span class="c1">// Case 2</span>
+<span class="nx">somearray</span><span class="p">.</span><span class="nx">length</span><span class="o">++</span><span class="p">;</span>         <span class="c1">// legal</span>
+<span class="kt">int8</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="k">storage</span> <span class="nx">storageArr2</span><span class="p">;</span> <span class="c1">// Explicit case 2</span>
+<span class="nx">somearray2</span><span class="p">.</span><span class="nx">length</span><span class="o">++</span><span class="p">;</span>         <span class="c1">// legal</span>
+</pre></div>
+</div>
+<p><strong>Important note:</strong> In Solidity, array dimensions are declared backwards from the way you
+might be used to declaring them in C or Java, but they are access as in
+C or Java.</p>
+<p>For example, <cite>int8[][5] somearray;</cite> are 5 dynamic <cite>int8</cite> arrays.</p>
+<p>The reason for this is that <cite>T[5]</cite> is always an array of 5 <cite>T`s,
+no matter whether `T</cite> itself is an array or not (this is not the
+case in C or Java).</p>
+</div>
+<div class="section" id="is-it-possible-to-return-an-array-of-strings-string-from-a-solidity-function">
+<h3>Is it possible to return an array of strings ( string[] ) from a Solidity function?<a class="headerlink" href="#is-it-possible-to-return-an-array-of-strings-string-from-a-solidity-function" title="Permalink to this headline">¶</a></h3>
+<p>Not yet, as this requires two levels of dynamic arrays (<cite>string</cite> is a dynamic array itself).</p>
+</div>
+<div class="section" id="if-you-issue-a-call-for-an-array-it-is-possible-to-retrieve-the-whole-array-or-must-you-write-a-helper-function-for-that">
+<h3>If you issue a call for an array, it is possible to retrieve the whole array? Or must you write a helper function for that?<a class="headerlink" href="#if-you-issue-a-call-for-an-array-it-is-possible-to-retrieve-the-whole-array-or-must-you-write-a-helper-function-for-that" title="Permalink to this headline">¶</a></h3>
+<p>The automatic accessor function for a public state variable of array type only returns
+individual elements. If you want to return the complete array, you have to
+manually write a function to do that.</p>
+</div>
+<div class="section" id="what-could-have-happened-if-an-account-has-storage-value-s-but-no-code-example-http-test-ether-camp-account-5f740b3a43fbb99724ce93a879805f4dc89178b5">
+<h3>What could have happened if an account has storage value/s but no code?  Example: <a class="reference external" href="http://test.ether.camp/account/5f740b3a43fbb99724ce93a879805f4dc89178b5">http://test.ether.camp/account/5f740b3a43fbb99724ce93a879805f4dc89178b5</a><a class="headerlink" href="#what-could-have-happened-if-an-account-has-storage-value-s-but-no-code-example-http-test-ether-camp-account-5f740b3a43fbb99724ce93a879805f4dc89178b5" title="Permalink to this headline">¶</a></h3>
+<p>The last thing a constructor does is returning the code of the contract.
+The gas costs for this depend on the length of the code and it might be
+that the supplied gas is not enough. This situation is the only one
+where an &#8220;out of gas&#8221; exception does not revert changes to the state,
+i.e. in this case the initialisation of the state variables.</p>
+<p><a class="reference external" href="https://github.com/ethereum/wiki/wiki/Subtleties">https://github.com/ethereum/wiki/wiki/Subtleties</a></p>
+<p>After a successful CREATE operation&#8217;s sub-execution, if the operation returns x, 5 * len(x) gas is subtracted from the remaining gas before the contract is created. If the remaining gas is less than 5 * len(x), then no gas is subtracted, the code of the created contract becomes the empty string, but this is not treated as an exceptional condition - no reverts happen.</p>
+</div>
+<div class="section" id="how-do-i-use-send">
+<h3>How do I use .send()?<a class="headerlink" href="#how-do-i-use-send" title="Permalink to this headline">¶</a></h3>
+<p>If you want to send 20 Ether from a contract to the address <cite>x</cite>, you use <cite>x.send(20 ether);</cite>.
+Here, <cite>x</cite> can be a plain address or a contract. If the contract already explicitly defines
+a function <cite>send</cite> (and thus overwrites the special function), you can use <cite>address(x).send(20 ether);</cite>.</p>
+</div>
+<div class="section" id="what-does-the-following-strange-check-do-in-the-custom-token-contract">
+<h3>What does the following strange check do in the Custom Token contract?<a class="headerlink" href="#what-does-the-following-strange-check-do-in-the-custom-token-contract" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">balanceOf</span><span class="p">[</span><span class="nx">_to</span><span class="p">]</span> <span class="o">+</span> <span class="nx">_value</span> <span class="o">&lt;</span> <span class="nx">balanceOf</span><span class="p">[</span><span class="nx">_to</span><span class="p">])</span> <span class="k">throw</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Integers in Solidity (and most other machine-related programming languages) are restricted to a certain range.
+For <cite>uint256</cite>, this is <cite>0</cite> up to <cite>2**256 - 1</cite>. If the result of some operation on those numbers
+does not fit inside this range, it is truncated. These truncations can have
+<a class="reference external" href="https://en.bitcoin.it/wiki/Value_overflow_incident">serious consequences</a>, so code like the one
+above is necessary to avoid certain attacks.</p>
+</div>
+<div class="section" id="more-questions">
+<h3>More Questions?<a class="headerlink" href="#more-questions" title="Permalink to this headline">¶</a></h3>
+<p>If you have more questions or your question is not answered here, please talk to us on
+<a class="reference external" href="https://gitter.im/ethereum/solidity">gitter</a> or file an <a class="reference external" href="https://github.com/ethereum/solidity/issues">issue</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Frequently Asked Questions</a><ul>
+<li><a class="reference internal" href="#basic-questions">Basic Questions</a><ul>
+<li><a class="reference internal" href="#what-is-solidity">What is Solidity?</a></li>
+<li><a class="reference internal" href="#how-do-i-compile-contracts">How do I compile contracts?</a></li>
+<li><a class="reference internal" href="#create-and-publish-the-most-basic-contract-possible">Create and publish the most basic contract possible</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-do-something-on-a-specific-block-number-e-g-publish-a-contract-or-execute-a-transaction">Is it possible to do something on a specific block number? (e.g. publish a contract or execute a transaction)</a></li>
+<li><a class="reference internal" href="#what-is-the-transaction-payload">What is the transaction &#8220;payload&#8221;?</a></li>
+<li><a class="reference internal" href="#is-there-a-decompiler-available">Is there a decompiler available?</a></li>
+<li><a class="reference internal" href="#does-selfdestruct-free-up-space-in-the-blockchain">Does selfdestruct() free up space in the blockchain?</a></li>
+<li><a class="reference internal" href="#create-a-contract-that-can-be-killed-and-return-funds">Create a contract that can be killed and return funds</a></li>
+<li><a class="reference internal" href="#store-ether-in-a-contract">Store Ether in a contract</a></li>
+<li><a class="reference internal" href="#use-a-non-constant-function-req-sendtransaction-to-increment-a-variable-in-a-contract">Use a non-constant function (req sendTransaction) to increment a variable in a contract</a></li>
+<li><a class="reference internal" href="#get-contract-address-in-solidity">Get contract address in Solidity</a></li>
+<li><a class="reference internal" href="#what-is-the-difference-between-a-function-marked-constant-and-one-that-is-not">What is the difference between a function marked constant and one that is not?</a></li>
+<li><a class="reference internal" href="#get-a-contract-to-return-its-funds-to-you-not-using-selfdestruct">Get a contract to return its funds to you (not using selfdestruct(...)).</a></li>
+<li><a class="reference internal" href="#what-is-a-mapping-and-how-do-we-use-them">What is a mapping and how do we use them?</a></li>
+<li><a class="reference internal" href="#how-can-i-get-the-length-of-a-mapping">How can I get the length of a mapping?</a></li>
+<li><a class="reference internal" href="#are-mappings-iterable">Are mappings iterable?</a></li>
+<li><a class="reference internal" href="#can-you-return-an-array-or-a-string-from-a-solidity-function-call">Can you return an array or a string from a solidity function call?</a></li>
+<li><a class="reference internal" href="#how-do-you-represent-double-float-in-solidity">How do you represent double/float in Solidity?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-in-line-initialize-an-array-like-so-string32-myarray-a-b">Is it possible to in-line initialize an array like so: string32[] myarray = [&#8220;a&#8221;, &#8220;b&#8221;];</a></li>
+<li><a class="reference internal" href="#what-are-events-and-why-do-we-need-them">What are events and why do we need them?</a></li>
+<li><a class="reference internal" href="#what-are-the-different-function-visibilities">What are the different function visibilities?</a></li>
+<li><a class="reference internal" href="#do-contract-constructors-have-to-be-publicly-visible">Do contract constructors have to be publicly visible?</a></li>
+<li><a class="reference internal" href="#can-a-contract-have-multiple-constructors">Can a contract have multiple constructors?</a></li>
+<li><a class="reference internal" href="#is-a-constructor-required">Is a constructor required?</a></li>
+<li><a class="reference internal" href="#are-timestamps-now-block-timestamp-reliable">Are timestamps (now, block.timestamp) reliable?</a></li>
+<li><a class="reference internal" href="#can-a-contract-function-return-a-struct">Can a contract function return a struct?</a></li>
+<li><a class="reference internal" href="#if-i-return-an-enum-i-only-get-integer-values-in-web3-js-how-to-get-the-named-values">If I return an enum, I only get integer values in web3.js. How to get the named values?</a></li>
+<li><a class="reference internal" href="#what-is-the-deal-with-function-inside-solidity-contracts-how-can-a-function-not-have-a-name">What is the deal with &#8220;function () { ... }&#8221; inside Solidity contracts? How can a function not have a name?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-pass-arguments-to-the-fallback-function">Is it possible to pass arguments to the fallback function?</a></li>
+<li><a class="reference internal" href="#can-state-variables-be-initialized-in-line">Can state variables be initialized in-line?</a></li>
+<li><a class="reference internal" href="#what-is-the-modifier-keyword">What is the &#8220;modifier&#8221; keyword?</a></li>
+<li><a class="reference internal" href="#how-do-structs-work">How do structs work?</a></li>
+<li><a class="reference internal" href="#how-do-for-loops-work">How do for loops work?</a></li>
+<li><a class="reference internal" href="#what-character-set-does-solidity-use">What character set does Solidity use?</a></li>
+<li><a class="reference internal" href="#what-are-some-examples-of-basic-string-manipulation-substring-indexof-charat-etc">What are some examples of basic string manipulation (substring, indexOf, charAt, etc)?</a></li>
+<li><a class="reference internal" href="#can-i-concatenate-two-strings">Can I concatenate two strings?</a></li>
+<li><a class="reference internal" href="#why-is-the-low-level-function-call-less-favorable-than-instantiating-a-contract-with-a-variable-contractb-b-and-executing-its-functions-b-dosomething">Why is the low-level function .call() less favorable than instantiating a contract with a variable (ContractB b;) and executing its functions (b.doSomething();)?</a></li>
+<li><a class="reference internal" href="#is-unused-gas-automatically-refunded">Is unused gas automatically refunded?</a></li>
+<li><a class="reference internal" href="#when-returning-a-value-of-say-uint-type-is-it-possible-to-return-an-undefined-or-null-like-value">When returning a value of say &#8220;uint&#8221; type, is it possible to return an &#8220;undefined&#8221; or &#8220;null&#8221;-like value?</a></li>
+<li><a class="reference internal" href="#are-comments-included-with-deployed-contracts-and-do-they-increase-deployment-gas">Are comments included with deployed contracts and do they increase deployment gas?</a></li>
+<li><a class="reference internal" href="#what-happens-if-you-send-ether-along-with-a-function-call-to-a-contract">What happens if you send ether along with a function call to a contract?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-get-a-tx-receipt-for-a-transaction-executed-contract-to-contract">Is it possible to get a tx receipt for a transaction executed contract-to-contract?</a></li>
+<li><a class="reference internal" href="#what-is-the-memory-keyword-what-does-it-do">What is the memory keyword? What does it do?</a></li>
+<li><a class="reference internal" href="#can-a-regular-i-e-non-contract-ethereum-account-be-closed-permanently-like-a-contract-can">Can a regular (i.e. non-contract) ethereum account be closed permanently like a contract can?</a></li>
+<li><a class="reference internal" href="#what-is-the-difference-between-bytes-and-byte">What is the difference between <cite>bytes</cite> and <cite>byte[]</cite>?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-send-a-value-while-calling-an-overloaded-function">Is it possible to send a value while calling an overloaded function?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-questions">Advanced Questions</a><ul>
+<li><a class="reference internal" href="#how-do-you-get-a-random-number-in-a-contract-implement-a-self-returning-gambling-contract">How do you get a random number in a contract? (Implement a self-returning gambling contract.)</a></li>
+<li><a class="reference internal" href="#get-return-value-from-non-constant-function-from-another-contract">Get return value from non-constant function from another contract</a></li>
+<li><a class="reference internal" href="#get-contract-to-do-something-when-it-is-first-mined">Get contract to do something when it is first mined</a></li>
+<li><a class="reference internal" href="#can-a-contract-create-another-contract">Can a contract create another contract?</a></li>
+<li><a class="reference internal" href="#how-do-you-create-2-dimensional-arrays">How do you create 2-dimensional arrays?</a></li>
+<li><a class="reference internal" href="#what-does-p-recipient-call-value-p-amount-p-data-do">What does p.recipient.call.value(p.amount)(p.data) do?</a></li>
+<li><a class="reference internal" href="#can-a-contract-function-accept-a-two-dimensional-array">Can a contract function accept a two-dimensional array?</a></li>
+<li><a class="reference internal" href="#what-is-the-relationship-between-bytes32-and-string-why-is-it-that-bytes32-somevar-stringliteral-works-and-what-does-the-saved-32-byte-hex-value-mean">What is the relationship between bytes32 and string? Why is it that ‘bytes32 somevar = &#8220;stringliteral&#8221;;’ works and what does the saved 32-byte hex value mean?</a></li>
+<li><a class="reference internal" href="#can-a-contract-pass-an-array-static-size-or-string-or-bytes-dynamic-size-to-another-contract">Can a contract pass an array (static size) or string or bytes (dynamic size) to another contract?</a></li>
+<li><a class="reference internal" href="#sometimes-when-i-try-to-change-the-length-of-an-array-with-ex-arrayname-length-7-i-get-a-compiler-error-value-must-be-an-lvalue-why">Sometimes, when I try to change the length of an array with ex: &#8220;arrayname.length = 7;&#8221; I get a compiler error &#8220;Value must be an lvalue&#8221;. Why?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-return-an-array-of-strings-string-from-a-solidity-function">Is it possible to return an array of strings ( string[] ) from a Solidity function?</a></li>
+<li><a class="reference internal" href="#if-you-issue-a-call-for-an-array-it-is-possible-to-retrieve-the-whole-array-or-must-you-write-a-helper-function-for-that">If you issue a call for an array, it is possible to retrieve the whole array? Or must you write a helper function for that?</a></li>
+<li><a class="reference internal" href="#what-could-have-happened-if-an-account-has-storage-value-s-but-no-code-example-http-test-ether-camp-account-5f740b3a43fbb99724ce93a879805f4dc89178b5">What could have happened if an account has storage value/s but no code?  Example: http://test.ether.camp/account/5f740b3a43fbb99724ce93a879805f4dc89178b5</a></li>
+<li><a class="reference internal" href="#how-do-i-use-send">How do I use .send()?</a></li>
+<li><a class="reference internal" href="#what-does-the-following-strange-check-do-in-the-custom-token-contract">What does the following strange check do in the Custom Token contract?</a></li>
+<li><a class="reference internal" href="#more-questions">More Questions?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="common-patterns.html"
+                        title="previous chapter">Common Patterns</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/frequently-asked-questions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="common-patterns.html" title="Common Patterns"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

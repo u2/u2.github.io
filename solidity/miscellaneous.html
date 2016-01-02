@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Miscellaneous &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="Solidity in Depth" href="solidity-in-depth.html" />
+    <link rel="next" title="Style Guide" href="style-guide.html" />
+    <link rel="prev" title="Contracts" href="contracts.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="style-guide.html" title="Style Guide"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contracts.html" title="Contracts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" accesskey="U">Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="miscellaneous">
+<h1>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="layout-of-state-variables-in-storage">
+<span id="index-0"></span><h2>Layout of State Variables in Storage<a class="headerlink" href="#layout-of-state-variables-in-storage" title="Permalink to this headline">¶</a></h2>
+<p>Statically-sized variables (everything except mapping and dynamically-sized array types) are laid out contiguously in storage starting from position <cite>0</cite>. Multiple items that need less than 32 bytes are packed into a single storage slot if possible, according to the following rules:</p>
+<ul class="simple">
+<li>The first item in a storage slot is stored lower-order aligned.</li>
+<li>Elementary types use only that many bytes that are necessary to store them.</li>
+<li>If an elementary type does not fit the remaining part of a storage slot, it is moved to the next storage slot.</li>
+<li>Structs and array data always start a new slot and occupy whole slots (but items inside a struct or array are packed tightly according to these rules).</li>
+</ul>
+<p>The elements of structs and arrays are stored after each other, just as if they were given explicitly.</p>
+<p>Due to their unpredictable size, mapping and dynamically-sized array types use a <cite>sha3</cite>
+computation to find the starting position of the value or the array data. These starting positions are always full stack slots.</p>
+<p>The mapping or the dynamic array itself
+occupies an (unfilled) slot in storage at some position <cite>p</cite> according to the above rule (or by
+recursively applying this rule for mappings to mappings or arrays of arrays). For a dynamic array, this slot stores the number of elements in the array (byte arrays and strings are an exception here, see below). For a mapping, the slot is unused (but it is needed so that two equal mappings after each other will use a different hash distribution).
+Array data is located at <cite>sha3(p)</cite> and the value corresponding to a mapping key
+<cite>k</cite> is located at <cite>sha3(k . p)</cite> where <cite>.</cite> is concatenation. If the value is again a
+non-elementary type, the positions are found by adding an offset of <cite>sha3(k . p)</cite>.</p>
+<p><cite>bytes</cite> and <cite>string</cite> store their data in the same slot where also the length is stored if they are short. In particular: If the data is at most <cite>31</cite> bytes long, it is stored in the higher-order bytes (left aligned) and the lowest-order byte stores <cite>length * 2</cite>. If it is longer, the main slot stores <cite>length * 2 + 1</cite> and the data is stored as usual in <cite>sha3(slot)</cite>.</p>
+<p>So for the following contract snippet:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">c</span> <span class="p">{</span>
+  <span class="kd">struct</span> <span class="nx">S</span> <span class="p">{</span> <span class="kt">uint</span> <span class="nx">a</span><span class="p">;</span> <span class="kt">uint</span> <span class="nx">b</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">uint</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="k">mapping</span><span class="p">(</span><span class="kt">uint</span> <span class="o">=&gt;</span> <span class="k">mapping</span><span class="p">(</span><span class="kt">uint</span> <span class="o">=&gt;</span> <span class="nx">S</span><span class="p">))</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The position of <cite>data[4][9].b</cite> is at <cite>sha3(uint256(9) . sha3(uint256(4) . uint256(1))) + 1</cite>.</p>
+</div>
+<div class="section" id="esoteric-features">
+<h2>Esoteric Features<a class="headerlink" href="#esoteric-features" title="Permalink to this headline">¶</a></h2>
+<p>There are some types in Solidity&#8217;s type system that have no counterpart in the syntax. One of these types are the types of functions. But still, using <cite>var</cite> it is possible to have local variables of these types:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">FunctionSelector</span> <span class="p">{</span>
+  <span class="kd">function</span> <span class="nx">select</span><span class="p">(</span><span class="kt">bool</span> <span class="nx">useB</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">x</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">z</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">useB</span><span class="p">)</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">b</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">a</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">x</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">z</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">function</span> <span class="nx">b</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">x</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">z</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Calling <cite>select(false, x)</cite> will compute <cite>x * x</cite> and <cite>select(true, x)</cite> will compute <cite>2 * x</cite>.</p>
+</div>
+<div class="section" id="internals-the-optimizer">
+<span id="index-1"></span><h2>Internals - the Optimizer<a class="headerlink" href="#internals-the-optimizer" title="Permalink to this headline">¶</a></h2>
+<p>The Solidity optimizer operates on assembly, so it can be and also is used by other languages. It splits the sequence of instructions into basic blocks at JUMPs and JUMPDESTs. Inside these blocks, the instructions are analysed and every modification to the stack, to memory or storage is recorded as an expression which consists of an instruction and a list of arguments which are essentially pointers to other expressions. The main idea is now to find expressions that are always equal (on every input) and combine them into an expression class. The optimizer first tries to find each new expression in a list of already known expressions. If this does not work, the expression is simplified according to rules like <cite>constant</cite> + <cite>constant</cite> = <cite>sum_of_constants</cite> or <cite>X</cite> * 1 = <cite>X</cite>. Since this is done recursively, we can also apply the latter rule if the second factor is a more complex expression where we know that it will always evaluate to one. Modifications to storage and memory locations have to erase knowledge about storage and memory locations which are not known to be different: If we first write to location x and then to location y and both are input variables, the second could overwrite the first, so we actually do not know what is stored at x after we wrote to y. On the other hand, if a simplification of the expression x - y evaluates to a non-zero constant, we know that we can keep our knowledge about what is stored at x.</p>
+<p>At the end of this process, we know which expressions have to be on the stack in the end and have a list of modifications to memory and storage. This information is stored together with the basic blocks and is used to link them. Furthermore, knowledge about the stack, storage and memory configuration is forwarded to the next block(s). If we know the targets of all JUMP and JUMPI instructions, we can build a complete control flow graph of the program. If there is only one target we do not know (this can happen as in principle, jump targets can be computed from inputs), we have to erase all knowledge about the input state of a block as it can be the target of the unknown JUMP. If a JUMPI is found whose condition evaluates to a constant, it is transformed to an unconditional jump.</p>
+<p>As the last step, the code in each block is completely re-generated. A dependency graph is created from the expressions on the stack at the end of the block and every operation that is not part of this graph is essentially dropped. Now code is generated that applies the modifications to memory and storage in the order they were made in the original code (dropping modifications which were found not to be needed) and finally, generates all values that are required to be on the stack in the correct place.</p>
+<p>These steps are applied to each basic block and the newly generated code is used as replacement if it is smaller. If a basic block is split at a JUMPI and during the analysis, the condition evaluates to a constant, the JUMPI is replaced depending on the value of the constant, and thus code like</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+<span class="nx">data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mi">2</span><span class="p">;</span>
+<span class="k">else</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>is simplified to code which can also be compiled from</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="nx">data</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
+<span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>even though the instructions contained a jump in the beginning.</p>
+</div>
+<div class="section" id="using-the-commandline-compiler">
+<span id="index-2"></span><h2>Using the Commandline Compiler<a class="headerlink" href="#using-the-commandline-compiler" title="Permalink to this headline">¶</a></h2>
+<p>One of the build targets of the Solidity repository is <cite>solc</cite>, the solidity commandline compiler.
+Using <cite>solc &#8211;help</cite> provides you with an explanation of all options. The compiler can produce various outputs, ranging from simple binaries and assembly over an abstract syntax tree (parse tree) to estimations of gas usage.
+If you only want to compile a single file, you run it as <cite>solc &#8211;bin sourceFile.sol</cite> and it will print the binary. Before you deploy your contract, activate the optimizer while compiling using <cite>solc &#8211;optimize &#8211;bin sourceFile.sol</cite>. If you want to get some of the more advanced output variants of <cite>solc</cite>, it is probably better to tell it to output everything to separate files using <cite>solc -o outputDirectory &#8211;bin &#8211;ast &#8211;asm sourceFile.sol</cite>.</p>
+<p>Of course, you can also specify several source files and actually that is also required if you use the <cite>import</cite> statement in Solidity: The compiler will (for now) not automatically discover source files for you, so you have to provide it with all source files your project consists of.</p>
+<p>If your contracts use [libraries](#libraries), you will notice that the bytecode contains substrings of the form <cite>__LibraryName______</cite>. You can use <cite>solc</cite> as a linker meaning that it will insert the library addresses for you at those points:</p>
+<p>Either add <cite>&#8211;libraries &#8220;Math:0x12345678901234567890 Heap:0xabcdef0123456&#8221;</cite> to your command to provide an address for each library or store the string in a file (one library per line) and run <cite>solc</cite> using <cite>&#8211;libraries fileName</cite>.</p>
+<p>If <cite>solc</cite> is called with the option <cite>&#8211;link</cite>, all input files are interpreted to be unlinked binaries (hex-encoded) in the <cite>__LibraryName____</cite>-format given above and are linked in-place (if the input is read from stdin, it is written to stdout). All options except <cite>&#8211;libraries</cite> are ignored (including <cite>-o</cite>) in this case.</p>
+</div>
+<div class="section" id="tips-and-tricks">
+<h2>Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Use <cite>delete</cite> on arrays to delete all its elements.</li>
+<li>Use shorter types for struct elements and sort them such that short types are grouped together. This can lower the gas costs as multiple SSTORE operations might be combined into a single (SSTORE costs 5000 or 20000 gas, so this is what you want to optimise). Use the gas price estimator (with optimiser enabled) to check!</li>
+<li>Make your state variables public - the compiler will create <a class="reference internal" href="contracts.html#visibility-and-accessors"><span>getters</span></a> for you for free.</li>
+<li>If you end up checking conditions on input or state a lot at the beginning of your functions, try using <a class="reference internal" href="contracts.html#modifiers"><span>Function Modifiers</span></a>.</li>
+<li>If your contract has a function called <cite>send</cite> but you want to use the built-in send-function, use <cite>address(contractVariable).send(amount)</cite>.</li>
+<li>If you do <strong>not</strong> want your contracts to receive ether when called via <cite>send</cite>, you can add a throwing fallback function <cite>function() { throw; }</cite>.</li>
+<li>Initialise storage structs with a single assignment: <cite>x = MyStruct({a: 1, b: 2});</cite></li>
+</ul>
+</div>
+<div class="section" id="pitfalls">
+<h2>Pitfalls<a class="headerlink" href="#pitfalls" title="Permalink to this headline">¶</a></h2>
+<p>Unfortunately, there are some subtleties the compiler does not yet warn you about.</p>
+<ul class="simple">
+<li>In <cite>for (var i = 0; i &lt; arrayName.length; i++) { ... }</cite>, the type of <cite>i</cite> will be <cite>uint8</cite>, because this is the smallest type that is required to hold the value <cite>0</cite>. If the array has more than 255 elements, the loop will not terminate.</li>
+</ul>
+</div>
+<div class="section" id="cheatsheet">
+<h2>Cheatsheet<a class="headerlink" href="#cheatsheet" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="global-variables">
+<span id="index-3"></span><h3>Global Variables<a class="headerlink" href="#global-variables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><cite>block.coinbase</cite> (<cite>address</cite>): current block miner&#8217;s address</li>
+<li><cite>block.difficulty</cite> (<cite>uint</cite>): current block difficulty</li>
+<li><cite>block.gaslimit</cite> (<cite>uint</cite>): current block gaslimit</li>
+<li><cite>block.number</cite> (<cite>uint</cite>): current block number</li>
+<li><cite>block.blockhash</cite> (<cite>function(uint) returns (bytes32)</cite>): hash of the given block - only works for 256 most recent blocks</li>
+<li><cite>block.timestamp</cite> (<cite>uint</cite>): current block timestamp</li>
+<li><cite>msg.data</cite> (<cite>bytes</cite>): complete calldata</li>
+<li><cite>msg.gas</cite> (<cite>uint</cite>): remaining gas</li>
+<li><cite>msg.sender</cite> (<cite>address</cite>): sender of the message (current call)</li>
+<li><cite>msg.value</cite> (<cite>uint</cite>): number of wei sent with the message</li>
+<li><cite>now</cite> (<cite>uint</cite>): current block timestamp (alias for <cite>block.timestamp</cite>)</li>
+<li><cite>tx.gasprice</cite> (<cite>uint</cite>): gas price of the transaction</li>
+<li><cite>tx.origin</cite> (<cite>address</cite>): sender of the transaction (full call chain)</li>
+<li><cite>sha3(...) returns (bytes32)</cite>: compute the Ethereum-SHA3 hash of the (tightly packed) arguments</li>
+<li><cite>sha256(...) returns (bytes32)</cite>: compute the SHA256 hash of the (tightly packed) arguments</li>
+<li><cite>ripemd160(...) returns (bytes20)</cite>: compute RIPEMD of 256 the (tightly packed) arguments</li>
+<li><cite>ecrecover(bytes32, uint8, bytes32, bytes32) returns (address)</cite>: recover public key from elliptic curve signature</li>
+<li><cite>addmod(uint x, uint y, uint k) returns (uint)</cite>: compute <cite>(x + y) % k</cite> where the addition is performed with arbitrary precision and does not wrap around at <cite>2**256</cite>.</li>
+<li><cite>mulmod(uint x, uint y, uint k) returns (uint)</cite>: compute <cite>(x * y) % k</cite> where the multiplication is performed with arbitrary precision and does not wrap around at <cite>2**256</cite>.</li>
+<li><cite>this</cite> (current contract&#8217;s type): the current contract, explicitly convertible to <cite>address</cite></li>
+<li><cite>super</cite>: the contract one level higher in the inheritance hierarchy</li>
+<li><cite>selfdestruct(address)</cite>: destroy the current contract, sending its funds to the given address</li>
+<li><cite>&lt;address&gt;.balance</cite>: balance of the address in Wei</li>
+<li><cite>&lt;address&gt;.send(uint256) returns (bool)</cite>: send given amount of Wei to address, returns <cite>false</cite> on failure.</li>
+</ul>
+</div>
+<div class="section" id="function-visibility-specifiers">
+<span id="index-4"></span><h3>Function Visibility Specifiers<a class="headerlink" href="#function-visibility-specifiers" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">myFunction</span><span class="p">()</span> <span class="o">&lt;</span><span class="nx">visibility</span> <span class="nx">specifier</span><span class="o">&gt;</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><cite>public</cite>: visible externally and internally (creates accessor function for storage/state variables)</li>
+<li><cite>private</cite>: only visible in the current contract</li>
+<li><cite>external</cite>: only visible externally (only for functions) - i.e. can only be message-called (via <cite>this.fun</cite>)</li>
+<li><cite>internal</cite>: only visible internally</li>
+</ul>
+</div>
+<div class="section" id="modifiers">
+<span id="index-5"></span><h3>Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><cite>constant</cite> for state variables: Disallows assignment (except initialisation), does not occupy storage slot.</li>
+<li><cite>constant</cite> for functions: Disallows modification of state - this is not enforced yet.</li>
+<li><cite>anonymous</cite> for events: Does not store event signature as topic.</li>
+<li><cite>indexed</cite> for event parameters: Stores the parameter as topic.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Miscellaneous</a><ul>
+<li><a class="reference internal" href="#layout-of-state-variables-in-storage">Layout of State Variables in Storage</a></li>
+<li><a class="reference internal" href="#esoteric-features">Esoteric Features</a></li>
+<li><a class="reference internal" href="#internals-the-optimizer">Internals - the Optimizer</a></li>
+<li><a class="reference internal" href="#using-the-commandline-compiler">Using the Commandline Compiler</a></li>
+<li><a class="reference internal" href="#tips-and-tricks">Tips and Tricks</a></li>
+<li><a class="reference internal" href="#pitfalls">Pitfalls</a></li>
+<li><a class="reference internal" href="#cheatsheet">Cheatsheet</a><ul>
+<li><a class="reference internal" href="#global-variables">Global Variables</a></li>
+<li><a class="reference internal" href="#function-visibility-specifiers">Function Visibility Specifiers</a></li>
+<li><a class="reference internal" href="#modifiers">Modifiers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contracts.html"
+                        title="previous chapter">Contracts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="style-guide.html"
+                        title="next chapter">Style Guide</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/miscellaneous.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="style-guide.html" title="Style Guide"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contracts.html" title="Contracts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Solidity 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="solidity-in-depth.html" >Solidity in Depth</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>

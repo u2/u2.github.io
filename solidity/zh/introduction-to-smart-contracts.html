@@ -1,0 +1,488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction to Smart Contracts &mdash; Solidity 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Solidity 0.2.0 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-smart-contracts">
+<h1>Introduction to Smart Contracts<a class="headerlink" href="#introduction-to-smart-contracts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-simple-smart-contract">
+<span id="simple-smart-contract"></span><h2>A Simple Smart Contract<a class="headerlink" href="#a-simple-smart-contract" title="Permalink to this headline">¶</a></h2>
+<p>Let us begin with the most basic example. It is fine if you do not understand everything
+right now, we will go into more detail later.</p>
+<div class="section" id="storage">
+<h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">SimpleStorage</span> <span class="p">{</span>
+    <span class="kt">uint</span> <span class="nx">storedData</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">set</span><span class="p">(</span><span class="kt">uint</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">storedData</span> <span class="o">=</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">get</span><span class="p">()</span> <span class="k">constant</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">retVal</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">storedData</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A contract in the sense of Solidity is a collection of code (its functions) and
+data (its <em>state</em>) that resides at a specific address on the Ethereum
+blockchain. The line <cite>uint storedData;</cite> declares a state variable called <cite>storedData</cite> of
+type <cite>uint</cite> (unsigned integer of 256 bits). You can think of it as a single slot
+in a database that can be queried and altered by calling functions of the
+code that manages the database. In the case of Ethereum, this is always the owning
+contract. And in this case, the functions <cite>set</cite> and <cite>get</cite> can be used to modify
+or retrieve the value of the variable.</p>
+<p>To access a state variable, you do not need the prefix <cite>this.</cite> as is common in
+other languages.</p>
+<p>This contract does not yet do much apart from (due to the infrastructure
+built by Ethereum) allowing anyone to store a single number that is accessible by
+anyone in the world without (feasible) a way to prevent you from publishing
+this number. Of course, anyone could just call <cite>set</cite> again with a different value
+and overwrite your number, but the number will still be stored in the history
+of the blockchain. Later, we will see how you can impose access restrictions
+so that only you can alter the number.</p>
+</div>
+<div class="section" id="subcurrency-example">
+<span id="index-0"></span><h3>Subcurrency Example<a class="headerlink" href="#subcurrency-example" title="Permalink to this headline">¶</a></h3>
+<p>The following contract will implement the simplest form of a
+cryptocurrency. It is possible to generate coins out of thin air, but
+only the person that created the contract will be able to do that (it is trivial
+to implement a different issuance scheme).
+Furthermore, anyone can send coins to each other without any need for
+registering with username and password - all you need is an Ethereum keypair.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is not a nice example for browser-solidity.
+If you use <a class="reference external" href="https://chriseth.github.io/browser-solidity">browser-solidity</a>
+to try this example, you cannot change the address where you call
+functions from. So you will always be the &#8220;minter&#8221;, you can mint coins and send
+them somewhere, but you cannot impersonate someone else. This might change in
+the future.</p>
+</div>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">contract</span> <span class="nx">Coin</span> <span class="p">{</span>
+    <span class="c1">// The keyword &quot;public&quot; makes those variables</span>
+    <span class="c1">// readable from outside.</span>
+    <span class="kt">address</span> <span class="k">public</span> <span class="nx">minter</span><span class="p">;</span>
+    <span class="k">mapping</span> <span class="p">(</span><span class="kt">address</span> <span class="o">=&gt;</span> <span class="kt">uint</span><span class="p">)</span> <span class="k">public</span> <span class="nx">balances</span><span class="p">;</span>
+
+    <span class="c1">// Events allow light clients to react on</span>
+    <span class="c1">// changes efficiently.</span>
+    <span class="kd">event</span> <span class="nx">Sent</span><span class="p">(</span><span class="kt">address</span> <span class="nx">from</span><span class="p">,</span> <span class="kt">address</span> <span class="nx">to</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">amount</span><span class="p">);</span>
+
+    <span class="c1">// This is the constructor whose code is</span>
+    <span class="c1">// run only when the contract is created.</span>
+    <span class="kd">function</span> <span class="nx">Coin</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">minter</span> <span class="o">=</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">mint</span><span class="p">(</span><span class="kt">address</span> <span class="nx">receiver</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">amount</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span> <span class="o">!=</span> <span class="nx">minter</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="nx">balances</span><span class="p">[</span><span class="nx">receiver</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">amount</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">function</span> <span class="nx">send</span><span class="p">(</span><span class="kt">address</span> <span class="nx">receiver</span><span class="p">,</span> <span class="kt">uint</span> <span class="nx">amount</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">balances</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">amount</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+        <span class="nx">balances</span><span class="p">[</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">]</span> <span class="o">-=</span> <span class="nx">amount</span><span class="p">;</span>
+        <span class="nx">balances</span><span class="p">[</span><span class="nx">receiver</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">amount</span><span class="p">;</span>
+        <span class="nx">Sent</span><span class="p">(</span><span class="nx">msg</span><span class="p">.</span><span class="nx">sender</span><span class="p">,</span> <span class="nx">receiver</span><span class="p">,</span> <span class="nx">amount</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This contract introduces some new concepts, let us go through them one by one</p>
+<p>The line <cite>address public minter;</cite> declares a state variable of type address
+that is publicly accessible. The <cite>address</cite> type is a 160 bit value
+that does not allow any arithmetic operations. It is suitable for
+storing addresses of contracts or keypairs belonging to external
+persons. The keyword <cite>public</cite> automatically generates a function that
+allows you to access the current value of the state variable.
+Without this keyword, other contracts have no way to access the variable
+and only the code of this contract can write to it.
+The function will look something like this:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">minter</span><span class="p">()</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">address</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">minter</span><span class="p">;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Of course, adding a function exactly like that will not work
+because we would have a
+function and a state variable with the same name, but hopefully, you
+get the idea - the compiler figures that out for you.</p>
+<p id="index-1">The next line, <cite>mapping (address =&gt; uint) public balances;</cite> also
+creates a public state variable, but it of a more complex datatype.
+The type maps addresses to unsigned integers.
+Mappings can be seen as hashtables which are
+virtually initialized such that every possible key exists and is mapped to a
+value whose byte-representation is all zeros. This analogy does not go
+too far, though, as it is neither possible to obtain a list of all keys of
+a mapping, nor a list of all values. So either keep in mind (or
+better, keep a list or use a more advanced data type) what you
+added to the mapping or use it in a context where this is not needed,
+like this one. The accessor function created by the <cite>public</cite> keyword
+is a bit more complex in this case. It roughly looks like the
+following:</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">balances</span><span class="p">(</span><span class="kt">address</span> <span class="nx">_account</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="kt">uint</span> <span class="nx">balance</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">balances</span><span class="p">[</span><span class="nx">_account</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As you see, you can use this function to easily query the balance of a
+single account.</p>
+<p id="index-2">The line <cite>event Sent(address from, address to, uint value);</cite> declares
+a so-called &#8220;event&#8221; which is fired in the last line of the function
+<cite>send</cite>. User interfaces (as well as server appliances of course) can
+listen for those events being fired on the blockchain without much
+cost. As soon as it is fired, the listener will also receive the
+arguments <cite>from</cite>, <cite>to</cite> and <cite>value</cite>, which makes it easy to track
+transactions. In order to listen for this event, you would use</p>
+<div class="highlight-Solidity"><div class="highlight"><pre><span class="nx">Coin</span><span class="p">.</span><span class="nx">Sent</span><span class="p">().</span><span class="nx">watch</span><span class="p">({},</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Coin transfer: &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">amount</span> <span class="o">+</span>
+            <span class="s2">&quot; coins were sent from &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">from</span> <span class="o">+</span>
+            <span class="s2">&quot; to &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">to</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Balances now:\n&quot;</span> <span class="o">+</span>
+            <span class="s2">&quot;Sender: &quot;</span> <span class="o">+</span> <span class="nx">Coin</span><span class="p">.</span><span class="nx">balances</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">from</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s2">&quot;Receiver: &quot;</span> <span class="o">+</span> <span class="nx">Coin</span><span class="p">.</span><span class="nx">balances</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">to</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note how the automatically generated function <cite>balances</cite> is called from
+the user interface.</p>
+<p id="index-3">The special function <cite>Coin</cite> is the
+constructor which is run during creation of the contract and
+cannot be called afterwards. It permanently stores the address of the person creating the
+contract: <cite>msg</cite> (together with <cite>tx</cite> and <cite>block</cite>) is a magic global variable that
+contains some properties which allow access to the blockchain. <cite>msg.sender</cite> is
+always the address where the current (external) function call came from.</p>
+<p>Finally, the functions that will actually end up with the contract and can be called
+by users and contracts alike are <cite>mint</cite> and <cite>send</cite>.
+If <cite>mint</cite> is called by anyone except the account that created the contract,
+nothing will happen. On the other hand, <cite>send</cite> can be used by anyone (who already
+has some of these coins) to send coins to anyone else. Note that if you use
+this contract to send coins to an address, you will not see anything when you
+look at that address on a blockchain explorer, because the fact that you sent
+coins and the changed balances are only stored in the data storage of this
+particular coin contract. By the use of events it is relatively easy to create
+a &#8220;blockchain explorer&#8221; that tracks transactions and balances of your new coin.</p>
+</div>
+</div>
+<div class="section" id="blockchain-basics">
+<span id="id1"></span><h2>Blockchain Basics<a class="headerlink" href="#blockchain-basics" title="Permalink to this headline">¶</a></h2>
+<p>Blockchains as a concept are not too hard to understand for programmers. The reason is that
+most of the complications (mining, hashing, elliptic-curve cryptography, peer-to-peer networks, ...)
+are just there to provide a certain set of features and promises. Once you accept these
+features as given, you do not have to worry about the underlying technology - or do you have
+to know how Amazon&#8217;s AWS works internally in order to use it?</p>
+<div class="section" id="transactions">
+<span id="index-4"></span><h3>Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline">¶</a></h3>
+<p>A blockchain is a globally shared, transactional database.
+This means that everyone can read entries in the database just by participating in the network.
+If you want to change something in the database, you have to create a so-called transaction
+which has to be accepted by all others.
+The word transaction implies that the change you want to make (assume you want to change
+two values at the same time) is either not done at all or completely applied. Furthermore,
+while your transaction is applied to the database, no other transaction can alter it.</p>
+<p>As an example, imagine a table that lists the balances of all accounts in an
+electronic currency. If a transfer from one account to another is requested,
+the transactional nature of the database ensures that if the amount is
+subtracted from one account, it is always added to the other account. If due
+to whatever reason, adding the amount to the target account is not possible,
+the source account is also not modified.</p>
+<p>Furthermore, a transaction is always cryptographically signed by the sender (creator).
+This makes it straightforward to guard access to specific modifications of the
+database. In the example of the electronic currency, a simple check ensures that
+only the person holding the keys to the account can transfer money from it.</p>
+</div>
+<div class="section" id="blocks">
+<span id="index-5"></span><h3>Blocks<a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h3>
+<p>One major obstacle to overcome is what in bitcoin terms is called &#8220;double-spend attack&#8221;:
+What happens if two transactions exist in the network that both want to empty an account,
+a so-called conflict?</p>
+<p>The abstract answer to this is that you do not have to care. An order of the transactions
+will be selected for you, the transactions will be bundled into what is called a &#8220;block&#8221;
+and then they will be executed and distributed among all participating nodes.
+If two transactions contradict each other, the one that ends up being second will
+be rejected and not become part of the block.</p>
+<p>These blocks form a linear sequence in time and that is where the word &#8220;blockchain&#8221;
+derives from. Blocks are added to the chain in rather regular intervals - for
+Ethereum this is roughly every 17 seconds.</p>
+<p>As part of the &#8220;order selection mechanism&#8221; (which is called &#8220;mining&#8221;) it may happen that
+blocks are reverted from time to time, but only at the &#8220;tip&#8221; of the chain. The more
+blocks are reverted the less likely it is. So it might be that your transactions
+are reverted and even removed from the blockchain, but the longer you wait, the less
+likely it will be.</p>
+<span class="target" id="the-ethereum-virtual-machine"></span></div>
+</div>
+<div class="section" id="index-6">
+<span id="id2"></span><h2>The Ethereum Virtual Machine<a class="headerlink" href="#index-6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<p>The Ethereum Virtual Machine or EVM is the runtime environment
+for smart contracts in Ethereum. It is not only sandboxed but
+actually completely isolated, which means that code running
+inside the EVM has no access to network, filesystem or other processes.
+Smart contracts even have limited access to other smart contracts.</p>
+</div>
+<div class="section" id="accounts">
+<span id="index-7"></span><h3>Accounts<a class="headerlink" href="#accounts" title="Permalink to this headline">¶</a></h3>
+<p>There are two kinds of accounts in Ethereum which share the same
+address space: <strong>External accounts</strong> that are controlled by
+public-private key pairs (i.e. humans) and <strong>contract accounts</strong> which are
+controlled by the code stored together with the account.</p>
+<p>The address of an external account is determined from
+the public key while the address of a contract is
+determined at the time the contract is created
+(it is derived from the creator address and the number
+of transactions sent from that address, the so-called &#8220;nonce&#8221;).</p>
+<p>Apart from the fact whether an account stores code or not,
+the EVM treats the two types equally, though.</p>
+<p>Every account has a persistent key-value store mapping 256 bit words to 256 bit
+words called <strong>storage</strong>.</p>
+<p>Furthermore, every account has a <strong>balance</strong> in
+Ether (in &#8220;Wei&#8221; to be exact) which can be modified by sending transactions that
+include Ether.</p>
+</div>
+<div class="section" id="index-8">
+<span id="id3"></span><h3>Transactions<a class="headerlink" href="#index-8" title="Permalink to this headline">¶</a></h3>
+<p>A transaction is a message that is sent from one account to another
+account (which might be the same or the special zero-account, see below).
+It can include binary data (its payload) and Ether.</p>
+<p>If the target account contains code, that code is executed and
+the payload is provided as input data.</p>
+<p>If the target account is the zero-account (the account with the
+address <cite>0</cite>), the transaction creates a <strong>new contract</strong>.
+As already mentioned, the address of that contract is not
+the zero address but an address derived from the sender and
+its number of transaction sent (the &#8220;nonce&#8221;). The payload
+of such a contract creation transaction is taken to be
+EVM bytecode and executed. The output of this execution is
+permanently stored as the code of the contract.
+This means that in order to create a contract, you do not
+send the actual code of the contract, but in fact code that
+returns that code.</p>
+</div>
+<div class="section" id="gas">
+<span id="index-9"></span><h3>Gas<a class="headerlink" href="#gas" title="Permalink to this headline">¶</a></h3>
+<p>Upon creation, each transaction is charged with a certain amount of <strong>gas</strong>,
+whose purpose is to limit the amount of work that is needed to execute
+the transaction and to pay for this execution. While the EVM executes the
+transaction, the gas is gradually depleted according to specific rules.</p>
+<p>The <strong>gas price</strong> is a value set by the creator of the transaction, who
+has to pay <cite>gas_price * gas</cite> up front from the sending account.
+If some gas is left after the execution, it is refunded in the same way.</p>
+<p>If the gas is used up at any point (i.e. it is negative),
+an out-of-gas exception is triggered, which reverts all modifications
+made to the state in the current call frame.</p>
+</div>
+<div class="section" id="storage-memory-and-the-stack">
+<span id="index-10"></span><h3>Storage, Memory and the Stack<a class="headerlink" href="#storage-memory-and-the-stack" title="Permalink to this headline">¶</a></h3>
+<p>Each account has a persistent memory area which is called <strong>storage</strong>.
+Storage is a key-value store that maps 256 bit words to 256 bit words.
+It is not possible to enumerate storage from within a contract
+and it is comparatively costly to read and even more so, to modify
+storage. A contract can neither read nor write to any storage apart
+from its own.</p>
+<p>The second memory area is called <strong>memory</strong>, of which a contract obtains
+a freshly cleared instance for each message call. Memory can be
+addressed at byte level, but read and written to in 32 byte (256 bit)
+chunks. Memory is more costly the larger it grows (it scales
+quadratically).</p>
+<p>The EVM is not a register machine but a stack machine, so all
+computations are performed on an area called the <strong>stack</strong>. It has a maximum size of
+1024 elements and contains words of 256 bits. Access to the stack is
+limited to the top end in the following way:
+It is possible to copy one of
+the topmost 16 elements to the top of the stack or swap the
+topmost element with one of the 16 elements below it.
+All other operations take the topmost two (or one, or more, depending on
+the operation) elements from the stack and push the result onto the stack.
+Of course it is possible to move stack elements to storage or memory,
+but it is not possible to just access arbitrary elements deeper in the stack
+without first removing the top of the stack.</p>
+</div>
+<div class="section" id="instruction-set">
+<span id="index-11"></span><h3>Instruction Set<a class="headerlink" href="#instruction-set" title="Permalink to this headline">¶</a></h3>
+<p>The instruction set of the EVM is kept minimal in order to avoid
+incorrect implementations which could cause consensus problems.
+All instructions operate on the basic data type, 256 bit words.
+The usual arithmetic, bit, logical and comparison operations are present.
+Conditional and unconditional jumps are possible. Furthermore,
+contracts can access relevant properties of the current block
+like its number and timestamp.</p>
+</div>
+<div class="section" id="message-calls">
+<span id="index-12"></span><h3>Message Calls<a class="headerlink" href="#message-calls" title="Permalink to this headline">¶</a></h3>
+<p>Contracts can call other contracts or send Ether to non-contract
+accounts by the means of message calls. Message calls are similar
+to transactions, in that they have a source, a target, data payload,
+Ether, gas and return data. In fact, every transaction consists of
+a top-level message call which in turn can create further message calls.</p>
+<p>A contract can decide how much of its remaining <strong>gas</strong> should be sent
+with the inner message call and how much it wants to retain.
+If an out-of-gas exception happens in the inner call (or any
+other exception), this will be signalled by an error value put onto the stack.
+In this case, only the gas sent together with the call is used up.
+In Solidity, the calling contract causes a manual exception by default in
+such situations, so that exceptions &#8220;bubble up&#8221; the call stack.</p>
+<p>As already said, the called contract (which can be the same as the caller)
+will receive a freshly cleared instance of memory and has access to the
+call payload - which will be provided in a separate area called the <strong>calldata</strong>.
+After it finished execution, it can return data which will be stored at
+a location in the caller&#8217;s memory preallocated by the caller.</p>
+<p>Calls are <strong>limited</strong> to a depth of 1024, which means that for more complex
+operations, loops should be preferred over recursive calls.</p>
+</div>
+<div class="section" id="callcode-and-libraries">
+<span id="index-13"></span><h3>Callcode and Libraries<a class="headerlink" href="#callcode-and-libraries" title="Permalink to this headline">¶</a></h3>
+<p>There exists a special variant of a message call, named <strong>callcode</strong>
+which is identical to a message call apart from the fact that
+the code at the target address is executed in the context of the calling
+contract.</p>
+<p>This means that a contract can dynamically load code from a different
+address at runtime. Storage, current address and balance still
+refer to the calling contract, only the code is taken from the called address.</p>
+<p>This makes it possible to implement the &#8220;library&#8221; feature in Solidity:
+Reusable library code that can be applied to a contract&#8217;s storage in
+order to e.g. implement a complex data structure.</p>
+</div>
+<div class="section" id="logs">
+<span id="index-14"></span><h3>Logs<a class="headerlink" href="#logs" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to store data in a specially indexed data structure
+that maps all they way up to the block level. This feature called <strong>logs</strong>
+is used by Solidity in order to implement <strong>events</strong>.
+Contracts cannot access log data after it has been created, but they
+can be efficiently accessed from outside the blockchain.
+Since some part of the log data is stored in bloom filters, it is
+possible to search for this data in an efficient and cryptographically
+secure way, so network peers that do not download the whole blockchain
+(&#8220;light clients&#8221;) can still find these logs.</p>
+</div>
+<div class="section" id="create">
+<span id="index-15"></span><h3>Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h3>
+<p>Contracts can even create other contracts using a special opcode (i.e.
+they do not simply call the zero address). The only difference between
+these <strong>create calls</strong> and normal message calls is that the payload data is
+executed and the result stored as code and the caller / creator
+receives the address of the new contract on the stack.</p>
+</div>
+<div class="section" id="selfdestruct">
+<span id="index-16"></span><h3>Selfdestruct<a class="headerlink" href="#selfdestruct" title="Permalink to this headline">¶</a></h3>
+<p>The only possibility that code is removed from the blockchain is
+when a contract at that address performs the <cite>SELFDESTRUCT</cite> operation.
+The remaining Ether stored at that address is sent to a designated
+target and then the storage and code is removed.</p>
+<p>Note that even if a contract&#8217;s code does not contain the <cite>SELFDESTRUCT</cite>
+opcode, it can still perform that operation using callcode.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction to Smart Contracts</a><ul>
+<li><a class="reference internal" href="#a-simple-smart-contract">A Simple Smart Contract</a><ul>
+<li><a class="reference internal" href="#storage">Storage</a></li>
+<li><a class="reference internal" href="#subcurrency-example">Subcurrency Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#blockchain-basics">Blockchain Basics</a><ul>
+<li><a class="reference internal" href="#transactions">Transactions</a></li>
+<li><a class="reference internal" href="#blocks">Blocks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#index-6">The Ethereum Virtual Machine</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#accounts">Accounts</a></li>
+<li><a class="reference internal" href="#index-8">Transactions</a></li>
+<li><a class="reference internal" href="#gas">Gas</a></li>
+<li><a class="reference internal" href="#storage-memory-and-the-stack">Storage, Memory and the Stack</a></li>
+<li><a class="reference internal" href="#instruction-set">Instruction Set</a></li>
+<li><a class="reference internal" href="#message-calls">Message Calls</a></li>
+<li><a class="reference internal" href="#callcode-and-libraries">Callcode and Libraries</a></li>
+<li><a class="reference internal" href="#logs">Logs</a></li>
+<li><a class="reference internal" href="#create">Create</a></li>
+<li><a class="reference internal" href="#selfdestruct">Selfdestruct</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/zh/introduction-to-smart-contracts.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Solidity 0.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Ethereum.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.3.
+    </div>
+  </body>
+</html>
