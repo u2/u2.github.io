@@ -89,4 +89,3 @@
 
 ###### 使用技术:
 * Rails2.3 + MySQL。
-* Prototype。
