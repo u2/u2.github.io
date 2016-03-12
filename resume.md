@@ -6,28 +6,29 @@
 
 # 工作技能
 * 熟悉 Ruby。
-* 熟悉 Rails 框架，从2009年开始使用 Ruby on Rails。
-* 熟悉 React，ES6，对前端开发有一定了解。
+* 熟悉 Rails，从2009年开始使用 Rails。
+* 熟悉 React，ES6，了解常用前端开发工具。
 * 了解区块链技术，熟悉 Solidity 语言，了解智能合约开发的相关工具链。
-* 熟悉 Git，曾在大搜车对全公司技术团队进行 Git 技术的推广和分享。
+* 熟悉 Git，曾在大搜车对全公司技术团队进行 Git 的推广和分享。
 * 了解 Web 相关基础知识。
 * 熟悉常用关系数据库 MySQL/Postgres，熟悉非关系型数据库 Redis。
 * 了解常用 Web 服务器 Nginx，了解常用 APP 服务器 Passenger/Thin/Unicorn/Puma。
 * 熟悉服务器的自动部署（Mina/Capistrano）和监控（Monit）。
 * 熟悉 Mac/Ubuntu 下开发。
-* 熟悉 Rspec，习惯 TDD 开发方式。
-* 熟悉 Web 服务的性能优化，对服务器的优化和缓存有一定理解。
-* 具有代码洁癖，良好的代码规范。
+* 熟悉 Rspec，习惯 TDD。
+* 熟悉 Web 性能优化和缓存。
+* 代码洁癖，良好的代码规范。
 * 熟悉 LaTeX，Markdown。
-* 了解 ZPL 语言，做过工业条码打印机的开发。
+* 了解 ZPL 工业条码打印机语言。
 * 了解 Erlang。
 * 英语四级，经常阅读英文资料。
 * 乐于学习和分享。
 
 # 期望
 * 愉快的工作环境和优秀的工作伙伴。
-* 全栈开发，富有挑战的工作。
+* 富有挑战的工作。
 * 合理的薪资。
+* 技术和语言不受限。
 
 # 联系方式
 * Email: zhangyaning1985@gmail.com
@@ -40,7 +41,7 @@
 ###### 工作内容：
 * 前端富文本编辑器的图片拖动功能和自动保存及草稿功能等。
 * SchemaTree 的部分功能。
-* 后端业务逻辑的和 API。
+* 后端部分业务逻辑的和 API。
 
 ###### 使用技术：
 * 后端：Rails4 + Grape + Redis + Riak + Rspec + Sidekiq。
@@ -67,13 +68,13 @@
 
 ###### 使用技术：
 * 后端：Rails4 ＋ Grape ＋ MySQL ＋ Redis + Sidekiq。
-* 正式服务器： Nginx ＋ Thin，测试服务器： Nginx ＋ Passenger。
-* 私信服务器：Websocket-Rails + Mongodb ＋ Puma。
+* 正式服务器： Nginx ＋ Thin；测试服务器： Nginx ＋ Passenger。
+* 私信服务器：Rails ＋ Websocket-Rails + Mongodb ＋ Puma。
 
 
 ##### 杭州云链 2013年12月 至 2014年7月
 ###### 工作内容：
-* 路由器管理后台和 Admin 后台和 API。
+* Portal 路由器管理后台，Admin 后台和 API。
 * 服务器管理和部署。
 
 ###### 使用技术:
