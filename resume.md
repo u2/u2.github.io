@@ -87,5 +87,5 @@
 * 公司电脑日常管理。
 
 ###### 使用技术:
-* Rails2.3 + MySQL
-* Prototype
+* Rails2.3 + MySQL。
+* Prototype。
