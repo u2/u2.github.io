@@ -33,6 +33,7 @@
 * Email: zhangyaning1985@gmail.com
 * Github: https://github.com/u2
 * RubyChina: https://ruby-china.org/rubyu2
+* Github-Resume: http://resume.github.io/?u2
 
 # 工作经验
 ##### 安存正信科技有限公司 2015年8月3日 至 2016年3月7日
@@ -76,7 +77,7 @@
 * 服务器管理和部署。
 
 ###### 使用技术:
-* Rails3 + Postgres + Redis
+* Rails3 + Postgres + Redis。
 
 ##### 杭州依赛 2010年5月 至 2013年11月
 ###### 工作内容：
