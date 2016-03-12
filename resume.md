@@ -32,6 +32,7 @@
 
 # 联系方式
 * Email: zhangyaning1985@gmail.com
+* Twitter: https://twitter.com/zhangyaning1985
 * Github: https://github.com/u2
 * RubyChina: https://ruby-china.org/rubyu2
 * Github-Resume: http://resume.github.io/?u2
