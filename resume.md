@@ -35,7 +35,6 @@
 * Twitter: https://twitter.com/zhangyaning1985
 * Github: https://github.com/u2
 * RubyChina: https://ruby-china.org/rubyu2
-* Github-Resume: http://resume.github.io/?u2
 
 # 工作经验
 ##### 安存正信科技有限公司 2015年8月3日 至 2016年3月7日
