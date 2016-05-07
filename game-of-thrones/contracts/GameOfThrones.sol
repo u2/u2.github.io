@@ -126,10 +126,19 @@ contract GameOfThrones {
     }
 
     // When the mad king decides to give his seat to someone else
-    // the king cost will be reset to 2 ether
-    function newKing(address newKing) {
-        if (msg.sender == madKing) {
-            madKing = newKing;
+    // the king cost will be reset to 1 ether
+    function abdicate() {
+        if (msg.sender == madKing && msg.sender != trueGods) {
+            madKing.send(kingBank);
+            if (piggyBank > kingCost * 25 / 100){
+                madKing.send(kingCost * 25 / 100);
+                piggyBank -= kingCost * 25 / 100
+            } else {
+                madKing.send(piggyBank);
+                piggyBank = 0;
+            }
+
+            madKing = trueGods;
             kingCost = 1 ether;
         }
     }
@@ -151,21 +160,22 @@ contract GameOfThrones {
 
     // Anyone can usurpation the kingship
     function usurpation() {
+        uint amount = msg.sender;
         // Add more money for king usurpation cost
         if (msg.sender == madKing) {
-            investInTheSystem(msg.value);
-            kingCost += msg.value;
+            investInTheSystem(amount);
+            kingCost += amount;
         } else {
-            if (onThrone + PEACE_PERIOD <= block.timestamp && msg.value >= kingCost * 110 / 100) {
+            if (onThrone + PEACE_PERIOD <= block.timestamp && amount >= kingCost * 110 / 100) {
                 // return the fees to before king
                 madKing.send(kingBank);
                 // offer sacrifices to the Gods
-                godBank += msg.value * 5 / 100;
+                godBank += amount * 5 / 100;
                 // new king
-                kingCost = msg.value;
+                kingCost = amount;
                 madKing = msg.sender;
                 onThrone = block.timestamp;
-                investInTheSystem(msg.value);
+                investInTheSystem(amount);
             } else {
                 throw;
             }
