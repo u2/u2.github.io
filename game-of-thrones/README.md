@@ -24,15 +24,15 @@
 
 ## 如何玩
 
-* 保护王国 (直接发送或者 Protect Kingdom函数)，发送 10 finney 到 100 ether 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
+* 保护王国 (直接发送或者 Protect Kingdom函数)，发送 10 finney 到 100 ether 到地址 : `0x9497043f4CD9450867479f3Fd873d80d9321094C`
 
-* 篡权（Usurpation函数），发送不低于篡权成本（King cost(wei)） 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
+* 篡权（Usurpation函数），发送不低于篡权成本（King cost(wei)） 到地址 : `0x9497043f4CD9450867479f3Fd873d80d9321094C`
 
-* 谋杀首相（Murder函数），发送100 finney 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
+* 谋杀首相（Murder函数），发送100 finney 到地址 : `0x9497043f4CD9450867479f3Fd873d80d9321094C`
 
 ## 合约验证
 
-[Etherscan.io](http://etherscan.io/address/0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb#code)
+[Etherscan.io](http://etherscan.io/address/0x9497043f4CD9450867479f3Fd873d80d9321094C#code)
 
 ## 关于作者
 
