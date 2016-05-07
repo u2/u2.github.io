@@ -88,7 +88,7 @@ contract GameOfThrones {
             investInTheSystem(amount);
             godAutomaticCollectFee();
             // 95% goes to the Piggy Bank
-            piggyBank += amount ＊ 90 ／ 100;
+            piggyBank += amount * 90 / 100;
 
             round += 1;
         } else {
@@ -130,10 +130,11 @@ contract GameOfThrones {
     function abdicate() {
         if (msg.sender == madKing && msg.sender != trueGods) {
             madKing.send(kingBank);
-            if (piggyBank > kingCost * 25 / 100){
-                madKing.send(kingCost * 25 / 100);
-                piggyBank -= kingCost * 25 / 100
-            } else {
+            if (piggyBank > kingCost * 40 / 100) {
+                madKing.send(kingCost * 40 / 100);
+                piggyBank -= kingCost * 40 / 100;
+            }
+            else {
                 madKing.send(piggyBank);
                 piggyBank = 0;
             }
@@ -160,13 +161,13 @@ contract GameOfThrones {
 
     // Anyone can usurpation the kingship
     function usurpation() {
-        uint amount = msg.sender;
+        uint amount = msg.value;
         // Add more money for king usurpation cost
         if (msg.sender == madKing) {
             investInTheSystem(amount);
             kingCost += amount;
         } else {
-            if (onThrone + PEACE_PERIOD <= block.timestamp && amount >= kingCost * 150 ／ 100) {
+            if (onThrone + PEACE_PERIOD <= block.timestamp && amount >= kingCost * 150 / 100) {
                 // return the fees to before king
                 madKing.send(kingBank);
                 // offer sacrifices to the Gods
