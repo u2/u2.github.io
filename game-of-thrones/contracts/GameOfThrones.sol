@@ -145,7 +145,7 @@ contract GameOfThrones {
 
     function bribery() {
         uint amount = 100 finney;
-        if (msg.value >= amount) {
+        if (msg.value >= amount && msg.sender != jester) {
             // return jester
             jester.send(jesterBank);
             jesterBank = 0;
