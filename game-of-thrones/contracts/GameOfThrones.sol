@@ -143,7 +143,7 @@ contract GameOfThrones {
         }
     }
 
-    function bribery() {
+    function murder() {
         uint amount = 100 finney;
         if (msg.value >= amount && msg.sender != jester) {
             // return jester
