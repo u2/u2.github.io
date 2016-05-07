@@ -109,7 +109,7 @@ contract GameOfThrones {
     }
 
     // fallback function
-    function() {
+    function() internal {
         repairTheCastle();
     }
 
