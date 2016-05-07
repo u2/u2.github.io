@@ -24,8 +24,30 @@
 
 ## 如何玩
 
-* 保护王国 (直接发送或者 Protect Kingdom函数)，发送 10 finney 到 100 ether 到地址 : 0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb 
+* 保护王国 (直接发送或者 Protect Kingdom函数)，发送 10 finney 到 100 ether 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
 
-* 篡权（Usurpation函数），发送不低于篡权成本（King cost(wei)） 到地址 : 0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb
+* 篡权（Usurpation函数），发送不低于篡权成本（King cost(wei)） 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
 
-* 谋杀首相（Murder函数），发送100 finney 到地址 : 0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb
+* 谋杀首相（Murder函数），发送100 finney 到地址 : `0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb`
+
+## 合约验证
+
+[Etherscan.io](http://etherscan.io/address/0x7996d791995B9f9C15EB4C3e899B09a344c54Bdb#code)
+
+## 关于作者
+
+https://twitter.com/zhangyaning1985
+http://ethfans.org/rubyu2
+
+## 项目地址
+
+[https://github.com/u2/u2.github.io/tree/master/game-of-thrones](https://github.com/u2/u2.github.io/tree/master/game-of-thrones)
+
+欢迎大家对项目提出意见和建议，让这个游戏更好玩。
+
+如果对游戏有重大改进，作者将赠送1 ether的游戏资金或者请客一次。
+
+## 鸣谢
+
+谢谢[VitalikButerin](https://twitter.com/VitalikButerin)的以太坊。
+谢谢[少平](http://ethfans.org/shaoping)对项目的建议和支持。

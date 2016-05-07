@@ -166,7 +166,7 @@ contract GameOfThrones {
             investInTheSystem(amount);
             kingCost += amount;
         } else {
-            if (onThrone + PEACE_PERIOD <= block.timestamp && amount >= kingCost * 110 / 100) {
+            if (onThrone + PEACE_PERIOD <= block.timestamp && amount >= kingCost * 150 ／ 100) {
                 // return the fees to before king
                 madKing.send(kingBank);
                 // offer sacrifices to the Gods
