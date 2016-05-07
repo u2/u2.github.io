@@ -44,7 +44,7 @@ contract GameOfThrones {
         totalCitizens = 0;
     }
 
-    function repairTheCastle() returns(bool) {
+    function protectKingdom() returns(bool) {
         uint amount = msg.value;
         // Check if the minimum amount if reached
         if (amount < 10 finney) {
@@ -87,8 +87,8 @@ contract GameOfThrones {
             totalCitizens += 1;
             investInTheSystem(amount);
             godAutomaticCollectFee();
-            // All goes to the Piggy Bank
-            piggyBank += amount;
+            // 95% goes to the Piggy Bank
+            piggyBank += amount ＊ 90 ／ 100;
 
             round += 1;
         } else {
@@ -96,9 +96,6 @@ contract GameOfThrones {
             citizensAmounts.push(amount * 110 / 100);
             totalCitizens += 1;
             investInTheSystem(amount);
-
-            // 5% goes to the Piggy Bank
-            piggyBank += (amount * 5 / 100);
 
             while (citizensAmounts[lastCitizenPaid] < (address(this).balance - piggyBank - godBank - kingBank - jesterBank) && lastCitizenPaid <= totalCitizens) {
                 citizensAddresses[lastCitizenPaid].send(citizensAmounts[lastCitizenPaid]);
@@ -110,7 +107,7 @@ contract GameOfThrones {
 
     // fallback function
     function() internal {
-        repairTheCastle();
+        protectKingdom();
     }
 
     function investInTheSystem(uint amount) internal {
