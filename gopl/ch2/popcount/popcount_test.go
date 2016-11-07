@@ -4,54 +4,54 @@
 package popcount_test
 
 import (
-  "testing"
+	"testing"
 
-  "gopl.io/ch2/popcount"
+	"gopl.io/ch2/popcount"
 )
 
 // -- Alternative implementations --
 
 func BitCount(x uint64) int {
-  // Hacker's Delight, Figure 5-2.
-  x = x - ((x >> 1) & 0x5555555555555555)
-  x = (x & 0x3333333333333333) + ((x >> 2) & 0x3333333333333333)
-  x = (x + (x >> 4)) & 0x0f0f0f0f0f0f0f0f
-  x = x + (x >> 8)
-  x = x + (x >> 16)
-  x = x + (x >> 32)
-  return int(x & 0x7f)
+	// Hacker's Delight, Figure 5-2.
+	x = x - ((x >> 1) & 0x5555555555555555)
+	x = (x & 0x3333333333333333) + ((x >> 2) & 0x3333333333333333)
+	x = (x + (x >> 4)) & 0x0f0f0f0f0f0f0f0f
+	x = x + (x >> 8)
+	x = x + (x >> 16)
+	x = x + (x >> 32)
+	return int(x & 0x7f)
 }
 
 // -- Benchmarks --
 
 func BenchmarkPopCount(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    popcount.PopCount(0x1234567890ABCDEF)
-  }
+	for i := 0; i < b.N; i++ {
+		popcount.PopCount(0x1234567890ABCDEF)
+	}
 }
 
 func BenchmarkPopCountFor(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    popcount.PopCountFor(0x1234567890ABCDEF)
-  }
+	for i := 0; i < b.N; i++ {
+		popcount.PopCountFor(0x1234567890ABCDEF)
+	}
 }
 
 func BenchmarkBitCount(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    BitCount(0x1234567890ABCDEF)
-  }
+	for i := 0; i < b.N; i++ {
+		BitCount(0x1234567890ABCDEF)
+	}
 }
 
 func BenchmarkPopCountByClearing(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    popcount.PopCountClearing(0x1234567890ABCDEF)
-  }
+	for i := 0; i < b.N; i++ {
+		popcount.PopCountClearing(0x1234567890ABCDEF)
+	}
 }
 
 func BenchmarkPopCountByShifting(b *testing.B) {
-  for i := 0; i < b.N; i++ {
-    popcount.PopCountByShifting(0x1234567890ABCDEF)
-  }
+	for i := 0; i < b.N; i++ {
+		popcount.PopCountByShifting(0x1234567890ABCDEF)
+	}
 }
 
 // 2.67GHz Xeon

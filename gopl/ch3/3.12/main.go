@@ -2,18 +2,18 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 )
 
 func main() {
-    var r bool = isAnagram("hello", "helloo")
-    fmt.Println(r)
+	var r bool = isAnagram("hello", "helloo")
+	fmt.Println(r)
 
-    r = isAnagram("hello", "ollhe")
-    fmt.Println(r)
+	r = isAnagram("hello", "ollhe")
+	fmt.Println(r)
 
-    r = isAnagram("helelo", "olelhe")
-    fmt.Println(r)
+	r = isAnagram("helelo", "olelhe")
+	fmt.Println(r)
 }
 
 func isAnagram(a, b string) bool {

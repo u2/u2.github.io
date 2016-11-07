@@ -2,10 +2,10 @@
 package main
 
 import (
-	"log"
-    "io"
 	"./github"
 	"html/template"
+	"io"
+	"log"
 	"net/http"
 )
 
