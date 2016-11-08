@@ -16,6 +16,7 @@ func main() {
 	remove()
 	clear()
 	copy()
+  addall()
 }
 
 func e1() {
@@ -124,3 +125,18 @@ func copy() {
 	fmt.Println(&x)
 	fmt.Println(&y)
 }
+
+func addall() {
+  var x intset.IntSet
+  x.Add(1)
+  x.Add(144)
+  x.Add(145)
+  x.Add(10)
+  x.Add(300)
+
+  fmt.Println(&x)
+  fmt.Println((&x).AddAll(1,3))
+  fmt.Println((&x).AddAll(1,2))
+  fmt.Println((&x).AddAll(1,2,5))
+}
+

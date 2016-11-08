@@ -108,3 +108,29 @@ func (s *IntSet) Copy() *IntSet {
 	copy(x.words, s.words)
 	return x
 }
+
+func (s *IntSet) AddAll(vals ...int) int {
+  count := 0
+  sum := 0
+  v := 0
+  for i, word := range s.words {
+    if word == 0 {
+      continue
+    }
+    for j := 0; j < 64; j++ {
+      if word&(1<<uint(j)) != 0 {
+        v++
+        for _, val := range vals {
+          if v == val {
+            count++
+            sum += 64*i+j
+            if count == len(vals) {
+              return sum
+            }
+          }
+        }
+      }
+    }
+  }
+  return sum
+}
