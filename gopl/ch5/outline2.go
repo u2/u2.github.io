@@ -12,32 +12,37 @@ func main() {
 		fmt.Fprintf(os.Stderr, "outline: %v\n", err)
 		os.Exit(1)
 	}
+
+	var depth int
+	var startElement func(n *html.Node, hasNode bool)
+
+	startElement = func(n *html.Node, hasNode bool) {
+		if n.Type == html.ElementNode {
+			fmt.Printf("%*s<%s", depth*2, "", n.Data)
+			printAttrs(n)
+			if hasNode {
+				fmt.Printf(">\n")
+			} else {
+				fmt.Printf(">")
+			}
+			depth++
+		}
+	}
+
+	var endElement func(n *html.Node, hasNode bool)
+
+	endElement = func(n *html.Node, hasNode bool) {
+		if n.Type == html.ElementNode {
+			depth--
+			if hasNode {
+				fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+			} else {
+				fmt.Printf("</%s>\n", n.Data)
+			}
+		}
+	}
+
 	forEachNode(doc, startElement, endElement)
-}
-
-var depth int
-
-func startElement(n *html.Node, hasNode bool) {
-	if n.Type == html.ElementNode {
-		fmt.Printf("%*s<%s", depth*2, "", n.Data)
-		printAttrs(n)
-		if hasNode {
-			fmt.Printf(">\n")
-		} else {
-			fmt.Printf(">")
-		}
-		depth++
-	}
-}
-func endElement(n *html.Node, hasNode bool) {
-	if n.Type == html.ElementNode {
-		depth--
-		if hasNode {
-			fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
-		} else {
-			fmt.Printf("</%s>\n", n.Data)
-		}
-	}
 }
 
 func printAttrs(n *html.Node) {
