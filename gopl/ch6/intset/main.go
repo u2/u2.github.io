@@ -46,30 +46,30 @@ func (s *IntSet) UnionWith(t *IntSet) {
 }
 
 func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
-  x := &IntSet{}
-  x.words = make([]uint64, len(s.words))
-  for i, tword := range t.words {
-    if i < len(s.words) {
-      word := s.words[i] & tword
-      if word > 0 {
-        x.words[i] = word
-      }
-    }
-  }
-  return x
+	x := &IntSet{}
+	x.words = make([]uint64, len(s.words))
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			word := s.words[i] & tword
+			if word > 0 {
+				x.words[i] = word
+			}
+		}
+	}
+	return x
 }
 
 func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
-  x := &IntSet{}
-  x.words = make([]uint64, len(s.words))
-  for i, word := range s.words {
-    if i < len(t.words) {
-      x.words[i] = word &^ t.words[i]
-    } else {
-      x.words[i] = word
-    }
-  }
-  return x
+	x := &IntSet{}
+	x.words = make([]uint64, len(s.words))
+	for i, word := range s.words {
+		if i < len(t.words) {
+			x.words[i] = word &^ t.words[i]
+		} else {
+			x.words[i] = word
+		}
+	}
+	return x
 }
 
 //!-intset
@@ -163,7 +163,7 @@ func (s *IntSet) Copy() *IntSet {
 // }
 
 func (s *IntSet) AddAll(nums ...int) {
-  for _, n := range nums {
-    s.Add(n)
-  }
+	for _, n := range nums {
+		s.Add(n)
+	}
 }
