@@ -45,6 +45,33 @@ func (s *IntSet) UnionWith(t *IntSet) {
 	}
 }
 
+func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
+  x := &IntSet{}
+  x.words = make([]uint64, len(s.words))
+  for i, tword := range t.words {
+    if i < len(s.words) {
+      word := s.words[i] & tword
+      if word > 0 {
+        x.words[i] = word
+      }
+    }
+  }
+  return x
+}
+
+func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
+  x := &IntSet{}
+  x.words = make([]uint64, len(s.words))
+  for i, word := range s.words {
+    if i < len(t.words) {
+      x.words[i] = word &^ t.words[i]
+    } else {
+      x.words[i] = word
+    }
+  }
+  return x
+}
+
 //!-intset
 
 //!+string
@@ -109,28 +136,34 @@ func (s *IntSet) Copy() *IntSet {
 	return x
 }
 
-func (s *IntSet) AddAll(vals ...int) int {
-  count := 0
-  sum := 0
-  v := 0
-  for i, word := range s.words {
-    if word == 0 {
-      continue
-    }
-    for j := 0; j < 64; j++ {
-      if word&(1<<uint(j)) != 0 {
-        v++
-        for _, val := range vals {
-          if v == val {
-            count++
-            sum += 64*i+j
-            if count == len(vals) {
-              return sum
-            }
-          }
-        }
-      }
-    }
+// func (s *IntSet) AddAll(vals ...int) int {
+//   count := 0
+//   sum := 0
+//   v := 0
+//   for i, word := range s.words {
+//     if word == 0 {
+//       continue
+//     }
+//     for j := 0; j < 64; j++ {
+//       if word&(1<<uint(j)) != 0 {
+//         v++
+//         for _, val := range vals {
+//           if v == val {
+//             count++
+//             sum += 64*i+j
+//             if count == len(vals) {
+//               return sum
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return sum
+// }
+
+func (s *IntSet) AddAll(nums ...int) {
+  for _, n := range nums {
+    s.Add(n)
   }
-  return sum
 }

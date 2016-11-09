@@ -17,6 +17,8 @@ func main() {
 	clear()
 	copy()
   addall()
+  intersectWith()
+  differenceWith()
 }
 
 func e1() {
@@ -135,8 +137,42 @@ func addall() {
   x.Add(300)
 
   fmt.Println(&x)
-  fmt.Println((&x).AddAll(1,3))
-  fmt.Println((&x).AddAll(1,2))
-  fmt.Println((&x).AddAll(1,2,5))
+  (&x).AddAll(1,3)
+  fmt.Println(&x)
 }
+
+func intersectWith() {
+  //!+main
+  fmt.Println("intersectWith")
+  var x, y intset.IntSet
+  x.Add(1)
+  x.Add(144)
+  x.Add(9)
+  fmt.Println(x.String()) // "{1 9 144}"
+
+  y.Add(9)
+  y.Add(42)
+  fmt.Println(y.String()) // "{9 42}"
+
+  z := x.IntersectWith(&y)
+  fmt.Println(z.String()) // "{1 9 42 144}"
+}
+
+func differenceWith() {
+  //!+main
+  fmt.Println("differenceWith")
+  var x, y intset.IntSet
+  x.Add(1)
+  x.Add(144)
+  x.Add(9)
+  fmt.Println(x.String()) // "{1 9 144}"
+
+  y.Add(9)
+  y.Add(42)
+  fmt.Println(y.String()) // "{9 42}"
+
+  z := x.DifferenceWith(&y)
+  fmt.Println(z.String()) // "{1 9 42 144}"
+}
+
 
