@@ -1,8 +1,9 @@
 // Just cached
 package main
+
 import (
-	"time"
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -17,7 +18,7 @@ func main() {
 // subf processes two input channels in a wrapped goroutine
 // and returns resulting new channels for subsequent fibonaccis
 func subf(c1, c2 *int) (int, int) {
-	*c1, *c2 = *c2, *c1 + *c2
+	*c1, *c2 = *c2, *c1+*c2
 	return *c1, *c2
 }
 

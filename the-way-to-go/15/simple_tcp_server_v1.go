@@ -48,7 +48,7 @@ func connectionHandler(conn net.Conn) {
 			goto DISCONNECT
 		}
 	}
-	DISCONNECT:
+DISCONNECT:
 	err := conn.Close()
 	println("Closed connection: ", connFrom)
 	checkError(err, "Close: ")

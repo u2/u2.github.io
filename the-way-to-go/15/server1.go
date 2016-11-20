@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"net"
+	"os"
 	"strings"
 )
 
@@ -48,7 +48,7 @@ func doServerStuff(conn net.Conn) {
 		}
 		// extract clientname:
 		ix := strings.Index(input, "says")
-		clName := input[0:ix-1]
+		clName := input[0 : ix-1]
 		//fmt.Printf("The clientname  is ---%s---\n", string(clName))
 		// set clientname active in mapUsers:
 		mapUsers[string(clName)] = 1
@@ -61,7 +61,7 @@ func doServerStuff(conn net.Conn) {
 //                a simple return continues in the function where we came from!
 func checkError(error error) {
 	if error != nil {
-		panic("Error: " + error.Error())  // terminate program
+		panic("Error: " + error.Error()) // terminate program
 	}
 }
 

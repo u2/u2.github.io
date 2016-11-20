@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"net"
 	"bufio"
+	"fmt"
+	"net"
+	"os"
 	"strings"
 )
 
@@ -41,6 +41,6 @@ func main() {
 
 func checkError(error error) {
 	if error != nil {
-		panic("Error: " + error.Error())  // terminate program
+		panic("Error: " + error.Error()) // terminate program
 	}
 }
