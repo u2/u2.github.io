@@ -1,0 +1,31 @@
+start =
+    expression
+    
+spaceword =
+    first:" " second:atom
+        { return second; }
+
+wordlist =
+    w:atom + s:spaceword*
+    { return w.concat(s) }
+    
+validchar
+    = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+
+atom =
+    chars:validchar+
+        { return chars.join(""); }
+        
+spacelist =
+    first:" " second:wraped
+        { return second; }
+        
+wraped =
+    "(" w:wordlist wr:(spacelist)* ")"
+    {  return w.concat(wr) }
+
+expression =
+    atom
+  / wraped
+    
+
