@@ -8,7 +8,7 @@
 # 工作技能
 
 * 丰富的区块链开发经验，对以太坊非常熟悉，5 年以上区块链开发和架构经验
-* 熟悉 Rust，Ruby，Python，Lisp，Javascript 等多种语言
+* 熟悉 Rust，Ruby，了解Python，Lisp，Javascript
 * 有良好的自学能力，沟通能力，管理能力
 * 为人乐观，积极向上
 * 喜欢阅读，游泳，跑步
